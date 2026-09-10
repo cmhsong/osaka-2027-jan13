@@ -59,6 +59,56 @@
 
   * { box-sizing: border-box; }
 
+  /* ---------- toolbar ---------- */
+  .bar {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--ground);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar-in {
+    max-width: 1000px; margin: 0 auto; padding: 9px 22px;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  }
+  .bar-id {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .bar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .btn {
+    font-family: "IBM Plex Sans KR", system-ui, sans-serif;
+    font-size: 12.5px; font-weight: 500;
+    color: var(--ink-2);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 6px 12px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+    line-height: 1.4;
+  }
+  .btn:hover { border-color: var(--ink-3); color: var(--ink); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn .cnt {
+    font-family: "IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 11px; color: var(--ink-3);
+    border: 1px solid var(--line); border-radius: 2px; padding: 0 5px;
+  }
+  .btn[aria-pressed="true"] {
+    background: var(--accent); border-color: var(--accent); color: #fff;
+  }
+  .btn[aria-pressed="true"] .cnt { color: #fff; border-color: rgba(255, 255, 255, .5); }
+  .btn-print { color: var(--ink); }
+  .btn svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+  @media (prefers-reduced-motion: no-preference) {
+    .btn { transition: border-color .12s ease, color .12s ease, background-color .12s ease; }
+  }
+
+  /* ---------- reference toggle ---------- */
+  :root.hide-ref [data-ref] { display: none !important; }
+
   body {
     background: var(--ground);
     color: var(--ink);
@@ -265,6 +315,17 @@
   .d4 { --day: var(--amber); }
   .d5 { --day: var(--slate); }
 
+  /* 대안 일정 — 점선 테두리로 "확정 아님"을 표시 */
+  .day.alt { border-left-style: dashed; }
+  .day.alt .dnum b { font-size: 26px; }
+  .badge {
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px; letter-spacing: .13em; text-transform: uppercase;
+    color: var(--day); border: 1px solid var(--day); border-radius: 2px;
+    padding: 1px 6px; vertical-align: 3px; margin-left: 9px;
+  }
+
   .dhead {
     padding: 20px 24px 18px;
     border-bottom: 1px solid var(--line-soft);
@@ -395,7 +456,79 @@
     .slot { grid-template-columns: 1fr; padding-left: 22px; }
     .slot .t::before { left: -12px; }
   }
+
+  /* ---------- print / PDF ---------- */
+  @page { margin: 13mm 12mm; }
+
+  @media print {
+    :root,
+    :root[data-theme="dark"],
+    :root:not([data-theme="light"]) {
+      --ground: #ffffff;
+      --surface: #ffffff;
+      --surface-2: #f4f5f5;
+      --line: #b9c0c4;
+      --line-soft: #dce1e3;
+      --ink: #101820;
+      --ink-2: #333c44;
+      --ink-3: #5d686f;
+      --vermilion: #a3331c;
+      --indigo: #1a4359;
+      --moss: #3b6242;
+      --amber: #85590a;
+      --slate: #49555e;
+      --shadow: none;
+    }
+
+    body { font-size: 10.2pt; line-height: 1.55; background: #fff; }
+    .bar { display: none !important; }
+    .wrap { max-width: none; padding: 0; gap: 22px; }
+
+    h1 { font-size: 27pt; }
+    h2 { font-size: 14pt; }
+    .dhead h3 { font-size: 13pt; }
+    .btotal .big { font-size: 16pt; }
+    .dnum b { font-size: 20pt; }
+
+    /* 잘리면 안 되는 덩어리 */
+    .fact, .ring, .route, .panel, .slot, .btotal, .flag, tr { break-inside: avoid; }
+    .day { break-inside: auto; }
+    .dhead, h2, .shead { break-after: avoid; }
+    section { break-inside: auto; }
+    thead { display: table-header-group; }
+
+    /* 종이에서는 그림자·둥근 모서리 대신 선으로 */
+    .day, .panel, .facts, .routes, .rings, .scroll, .btotal { box-shadow: none; }
+    .scroll { overflow: visible !important; }
+    table { min-width: 0; }
+    th, td { padding: 6px 9px; }
+    .wrap-cell { min-width: 0; }
+
+    /* 날짜별로 새 장에서 시작 */
+    .day + .day { break-before: page; }
+
+    a { text-decoration: none; color: inherit; }
+  }
 </style>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="bar-id">Osaka · 2027.01.13—17 · 4인</div>
+    <div class="bar-actions">
+      <button type="button" id="refbtn" class="btn" aria-pressed="false"
+              title="불채택 패스, 대안 경로, 예비 정보처럼 당일에는 볼 필요 없는 내용을 접습니다">
+        <span id="reflabel">참고 자료 접기</span>
+        <span class="cnt" id="refn">0</span>
+      </button>
+      <button type="button" id="printbtn" class="btn btn-print" title="인쇄 또는 PDF로 저장 (Ctrl+P)">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 15h8v6H8z"/>
+        </svg>
+        인쇄 · PDF
+      </button>
+    </div>
+  </div>
+</div>
 
 <div class="wrap">
 
@@ -490,17 +623,17 @@
             <td>¥970</td><td>8,439</td><td>난바 45분</td>
             <td class="wrap-cell dim"><span class="yes">이번 일정 채택.</span> 자유석·15~20분 간격. 종점이 난카이 난바라 숙소까지 도보 10분</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>난카이 특급 라피트 <span class="jp">ラピート</span></td>
             <td>¥1,490</td><td>12,963</td><td>난바 34~39분</td>
             <td class="wrap-cell dim">전석 지정. <span class="no">¥520 더 내고 6~10분 버는 셈</span>이라 4인이면 ¥2,080 차이. 짐 두는 자리는 확실히 낫습니다</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>JR 간사이공항 쾌속</td>
             <td>¥1,080</td><td>9,396</td><td>텐노지 50분</td>
             <td class="wrap-cell dim"><span class="no">난바로 안 갑니다.</span> 오사카역(우메다)까지는 70분. 이번 숙소와는 맞지 않음</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>리무진 버스 (OCAT·난바行)</td>
             <td>¥1,300</td><td>11,310</td><td>50~60분</td>
             <td class="wrap-cell dim">캐리어를 화물칸에 싣고 앉아서 갑니다. <strong>T2에 정차하는 편이 있어</strong> 셔틀을 건너뛸 수 있으니 귀국일에 짐이 많으면 재검토할 값어치</td>
@@ -525,7 +658,7 @@
             <td class="wrap-cell dim">오사카메트로 전 노선 + 시내버스 1일 무제한, 시내 명소 40여 곳 무료입장</td>
             <td class="wrap-cell dim"><span class="yes">채택 — 2일차에 사용.</span> 천수각 ¥600 + 고자부네 ¥1,500 + 공중정원 ¥2,000 + 헵파이브 ¥800 = ¥4,900어치. 지하철값까지 치면 1인 ¥2,000 이상 이득</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>오사카 주유패스 2일권</td>
             <td>¥5,500</td>
             <td class="wrap-cell dim">위와 동일, 이틀 (연속일 필요)</td>
@@ -537,31 +670,31 @@
             <td class="wrap-cell dim">간사이 사철·지하철·JR·버스 전부 + 편의점·자판기 결제</td>
             <td class="wrap-cell dim"><span class="yes">채택 — 4명 각자 발급.</span> 패스가 없는 1·4·5일차 이동을 전부 이걸로. 남은 잔액은 마지막 날 공항에서 소진</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>엔조이 에코카드</td>
             <td>평일 ¥820<br>주말 ¥620</td>
             <td class="wrap-cell dim">오사카메트로·시내버스 1일 무제한 (명소 할인은 소액)</td>
             <td class="wrap-cell dim"><span class="no">불채택</span> — 패스 없는 날의 지하철 사용이 하루 2~3회(¥430~640)뿐. 토요일(4일차)에 신세카이까지 왕복하면 ¥620과 거의 같아 굳이 살 이유가 없습니다</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>간사이 레일웨이 패스 2일권</td>
             <td>¥5,600</td>
             <td class="wrap-cell dim">간사이 사철·지하철 무제한(JR 제외), 난카이 공항선 포함. <strong>비연속 사용 가능</strong></td>
             <td class="wrap-cell dim"><span class="no">불채택</span> — 가장 비싼 이틀(1일차 ¥970 + 4일차 나라 왕복 ¥1,360＋시내 ¥430)을 골라 써도 실사용 ¥2,760. 절반도 못 뽑습니다</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>요코소 오사카 티켓</td>
             <td>¥1,650 내외</td>
             <td class="wrap-cell dim">난카이 라피트 편도 + 오사카메트로 1일권</td>
             <td class="wrap-cell dim"><span class="no">불채택</span> — 도착일엔 숙소 주변만 걸어 다녀 메트로를 거의 안 씁니다. 1일권이 그날 버려집니다</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>킨테츠 레일패스 1일권</td>
             <td>¥1,500~1,800</td>
             <td class="wrap-cell dim">킨테츠 오사카–나라 구간 + 나라교통 버스 (외국인 전용)</td>
             <td class="wrap-cell dim"><span class="no">불채택</span> — 나라공원·도다이지·나라마치가 전부 역에서 도보권. 왕복 승차권 ¥1,360이 더 쌉니다</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>JR 간사이 미니 패스</td>
             <td>¥3,000 내외</td>
             <td class="wrap-cell dim">JR 오사카·교토·나라·고베 구간 3일</td>
@@ -612,7 +745,7 @@
         <div class="spec"><span><b>37~40분</b></span><span>편도 <b>¥680</b> ／ 5,916원</span><span>왕복 ¥1,360</span></div>
       </div>
 
-      <div class="route">
+      <div class="route" data-ref>
         <h4>교토 <span class="jp">京都</span> — 투어 외 개별 이동 대비</h4>
         <div class="path">① JR 오사카 <em>—— 교토선 신쾌속 ——</em> 교토 · <b>29분 ¥580</b><br>② 한큐 오사카우메다 <em>—— 교토본선 특급 ——</em> 교토가와라마치 · <b>45분 ¥410</b><br>③ 케이한 요도야바시 <em>—— 특급 ——</em> 기온시조 · <b>45분 ¥430</b></div>
         <p>3일차는 투어 차량으로 움직이니 쓸 일이 없지만, 자유시간에 이탈하거나 투어를 놓쳤을 때를 위해 적어둡니다. 기온·기요미즈데라 쪽은 ③ 케이한이 가장 가깝고, 교토역 기준이면 ① JR이 가장 빠릅니다. 교토 시내 지하철·버스 1일권은 ¥1,100.</p>
@@ -708,7 +841,7 @@
             <td>~22시경</td><td>5~8분</td>
             <td class="wrap-cell dim">약·화장품은 돈키호테보다 대체로 저렴합니다. 난바·도톤보리에 지점이 여러 개</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>다이소 난바점</td>
             <td>~21시경</td><td>10분</td>
             <td class="wrap-cell dim">캐리어 정리용 압축팩, 부족한 세면도구. 100엔＋세금</td>
@@ -752,7 +885,7 @@
             <td class="h24">24시간</td><td class="yes">지원</td>
             <td class="wrap-cell dim"><span class="yes">기본값으로 삼으세요.</span> 트래블로그(Mastercard) 인식이 가장 안정적입니다. ATM 이용료가 건당 붙는 경우가 있습니다</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>이온은행 <span class="jp">イオン銀行</span></td>
             <td>이온 계열 점포 · 미니스톱</td>
             <td>점포 시간</td><td class="yes">지원</td>
@@ -770,7 +903,7 @@
             <td class="h24">24시간</td><td>영어</td>
             <td class="wrap-cell dim">2차 대안. 카드에 따라 거부되는 경우가 있으니 여기부터 시도하지는 마세요</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>유초은행 <span class="jp">ゆうちょ銀行</span></td>
             <td>우체국</td>
             <td>평일 위주</td><td>영어</td>
@@ -834,7 +967,7 @@
             <td>¥1,300~1,800</td><td>11,310~</td><td>7분</td>
             <td class="wrap-cell dim">오코노미야키. 구워서 내주니 편합니다. <span class="no">대기 30분 이상</span>이 기본이라 오픈 시간이나 늦은 저녁을 노리세요</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>미즈노 <span class="jp">美津の</span></td>
             <td>¥1,500~2,200</td><td>13,050~</td><td>8분</td>
             <td class="wrap-cell dim">도톤보리 오코노미야키 노포. 마 반죽을 쓴 야마이모야키가 간판. 줄이 아지노야보다 깁니다</td>
@@ -844,7 +977,7 @@
             <td>¥500~700</td><td>4,350~</td><td>5분</td>
             <td class="wrap-cell dim">타코야키 8개 500엔대. 센니치마에 본점이 가깝습니다. 겉바속촉 계열</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>쿠시카츠 다루마 도톤보리점</td>
             <td>¥1,500~2,000</td><td>13,050~</td><td>8분</td>
             <td class="wrap-cell dim">4일차에 신세카이 본점을 가니 <strong>중복 주의</strong>. 본점 대기가 심하면 이쪽으로 도망칠 수 있습니다</td>
@@ -883,7 +1016,7 @@
             <td>¥815</td><td>7,091</td><td>7분</td>
             <td class="wrap-cell dim">호젠지요코초. 단팥죽을 <strong>일부러 두 그릇에 나눠</strong> 내주는 100년 넘은 집. 디저트로 짧게</td>
           </tr>
-          <tr>
+          <tr data-ref>
             <td>하리쥬 <span class="jp">はり重</span> 도톤보리</td>
             <td>런치 ¥1,600~</td><td>13,920~</td><td>8분</td>
             <td class="wrap-cell dim">정육점이 하는 양식집. 저녁 스키야키는 ¥8,000 이상이라 예산 밖이지만, <strong>런치 비프카레·커틀릿</strong>이면 감당됩니다</td>
@@ -934,14 +1067,14 @@
             <div class="t">출발 −3h</div>
             <div>
               <h4>인천공항 제1여객터미널</h4>
-              <p>피치는 저비용 항공사라 <span class="kw">국제선 카운터가 출발 50분 전에 마감</span>됩니다. 온라인 체크인을 미리 해두고, 위탁수하물은 공항에서 사면 사전 구매가의 2배 이상이니 예약 때 붙여두세요.</p>
+              <p>피치 <span class="kw">국제선 카운터는 출발 50분 전에 마감</span>됩니다. 온라인 체크인을 마쳤는지 4명 각자 확인하고 출발하세요.</p>
             </div>
           </div>
           <div class="slot">
             <div class="t">도착</div>
             <div>
               <h4>간사이공항 제2터미널 (T2)</h4>
-              <p>피치 전용 터미널입니다. <span class="kw">전철역은 T1에 있어서 T2 → T1 무료 셔틀버스로 7~10분 이동</span>해야 합니다. 이걸 모르면 첫날 30분을 그냥 날립니다.</p>
+              <p>내리자마자 <span class="kw">T1행 무료 셔틀</span>을 타세요. 전철역도 ATM도 T1에 있습니다.</p>
               <div class="flag"><strong>입국 전 준비</strong> · Visit Japan Web 입국심사·세관 QR을 4명 각자 미리 발급. 기내에서 하면 와이파이가 없어 곤란합니다.</div>
             </div>
           </div>
@@ -978,8 +1111,8 @@
           <div class="slot">
             <div class="t">21:00</div>
             <div>
-              <h4>돈키호테 · 라이프 슈퍼에서 조식 장보기</h4>
-              <p><span class="kw">4일치 아침을 숙소 주방으로 해결하면 4인 기준 12~16만 원이 굳습니다.</span> 빵·계란·우유·과일·즉석 미소시루 정도면 충분.</p>
+              <h4>라이프 슈퍼에서 조식 장보기 · 돈키호테 구경</h4>
+              <p>빵·계란·우유·과일·즉석 미소시루면 4일치가 됩니다. 밤 8시 이후 <span class="kw">반액 스티커</span>가 붙은 도시락·회도 노려보세요.</p>
               <div class="cost">¥1,600 <b>／ 13,920원</b> · 4일치 1인분</div>
             </div>
           </div>
@@ -1058,7 +1191,7 @@
             <div>
               <h4>신사이바시 → 도톤보리 걸어서 복귀</h4>
               <p>패스로 지하철 무제한이니 컨디션 봐서 결정. 다이코쿠 드럭스토어에서 면세 쇼핑 1차전.</p>
-              <div class="flag"><strong>본전 계산</strong> · ¥600 + ¥1,500 + ¥2,000 + ¥800 = <span class="mono">¥4,900</span> 어치를 <span class="mono">¥3,300</span>에. 지하철 무제한은 덤.</div>
+              <div class="flag" data-ref><strong>본전 계산</strong> · ¥600 + ¥1,500 + ¥2,000 + ¥800 = <span class="mono">¥4,900</span> 어치를 <span class="mono">¥3,300</span>에. 지하철 무제한은 덤.</div>
             </div>
           </div>
         </div>
@@ -1130,7 +1263,7 @@
           <div class="dnum">Day<b>4</b></div>
           <h3>나라 사슴 & 신세카이 쿠시카츠</h3>
           <div class="date">01.16 SAT</div>
-          <p class="line">숙소 최대 장점을 쓰는 날. 킨테츠 닛폰바시역에서 나라까지 <span class="kw">환승 없이 직통</span>입니다.</p>
+          <p class="line">숙소 최대 장점을 쓰는 날. 킨테츠 닛폰바시역에서 나라까지 <span class="kw">환승 없이 직통</span>입니다. 나라를 빼고 싶다면 아래 <strong>Day 4 보충안</strong>에서 통째로 바꿀 수 있습니다.</p>
           <div class="dpass"><span class="tag">오늘의 패스</span> 킨테츠 나라 왕복 ¥1,360 · 신세카이 ICOCA ¥190 · 주유패스는 나라에서 안 먹힘</div>
         </div>
         <div class="slots">
@@ -1180,7 +1313,7 @@
               <h4>츠텐카쿠 전망대 <span class="jp">(通天閣)</span></h4>
               <p>쇼와 감성 그대로인 신세카이 일대를 위에서 봅니다. 미끄럼틀 <span class="jp">타워슬라이더</span>는 별도 요금.</p>
               <div class="cost">¥1,000 <b>／ 8,700원</b></div>
-              <div class="flag"><strong>대안</strong> · 걷기에 지쳤다면 바로 옆 스파월드 온천(¥1,500 내외)으로 대체. 먹방 전 90분 회복 코스로 좋습니다.</div>
+              <div class="flag" data-ref><strong>대안</strong> · 걷기에 지쳤다면 바로 옆 스파월드 온천(¥1,500 내외)으로 대체. 먹방 전 90분 회복 코스로 좋습니다.</div>
             </div>
           </div>
           <div class="slot">
@@ -1246,14 +1379,14 @@
             <div class="t">출발 −2h15m</div>
             <div>
               <h4>간사이공항역 도착 → T2행 무료 셔틀</h4>
-              <p>역은 T1에 붙어 있습니다. <span class="kw">피치는 T2</span>라 셔틀로 7~10분 더 가야 합니다. 갈 때 겪었으니 당황할 일은 없을 거예요.</p>
+              <p>올 때 탔던 셔틀을 반대로 탑니다. 엔화가 남았다면 <span class="kw">T1에서 마지막 인출·소진</span>을 끝내세요.</p>
             </div>
           </div>
           <div class="slot">
             <div class="t">출발 −2h</div>
             <div>
               <h4>T2 도착 · 피치 체크인</h4>
-              <p>수하물 규정 재확인 — 기내 반입은 <span class="kw">가방 2개 합쳐 7kg</span>. 쇼핑으로 늘어난 무게가 여기서 걸립니다. 초과분은 현장 요금이 비싸니 미리 나눠 담으세요.</p>
+              <p><span class="kw">쇼핑으로 늘어난 무게가 여기서 걸립니다.</span> 줄 서기 전에 4명이 짐을 서로 나눠 담아 한도를 맞추세요.</p>
               <div class="flag"><strong>절대 기준</strong> · 피치 국제선 카운터는 출발 <span class="mono">50분 전</span> 마감. 여기 걸리면 표가 그대로 날아갑니다.</div>
             </div>
           </div>
@@ -1273,25 +1406,224 @@
   </section>
 
   <section>
+    <div class="shead"><h2>Day 4 보충안</h2><p>나라를 빼고 그 하루를 다르게 쓰는 네 가지</p></div>
+
+    <div class="flag" style="--day: var(--amber); margin: 0 0 18px; padding: 13px 16px; border-left-width: 3px;">
+      <strong>원안(나라)을 버릴 때 잃는 것부터.</strong> 사슴과 도다이지 대불은 오사카에 없습니다. 반대로 얻는 것은 <span class="mono">왕복 이동 80분</span>과 <span class="mono">1인 ¥1,360</span>, 그리고 오사카를 더 깊이 볼 하루입니다. 넷 중 하나로 4일차를 통째로 교체하면 됩니다.
+    </div>
+
+    <div class="scroll" style="margin-bottom: 24px;">
+      <table>
+        <thead>
+          <tr><th>안</th><th>테마</th><th>1인 비용</th><th>원안 대비</th><th class="wrap-cell">한 줄 요약</th></tr>
+        </thead>
+        <tbody>
+          <tr class="pick">
+            <td><strong>A</strong> 텐진바시스지</td>
+            <td>로컬 먹방 · 레트로</td>
+            <td>¥6,900</td><td class="yes">−¥900</td>
+            <td class="wrap-cell dim"><span class="yes">추천.</span> 일본에서 가장 긴 2.6km 상점가를 먹으며 걷고, 나가야 카페 골목으로. <strong>사카이스지선 직통</strong>이라 환승이 없습니다</td>
+          </tr>
+          <tr class="pick">
+            <td><strong>B</strong> 고베항 야경</td>
+            <td>야경 · 항구</td>
+            <td>¥5,500</td><td class="yes">−¥2,300</td>
+            <td class="wrap-cell dim"><span class="yes">가장 쌉니다.</span> 오전은 오사카에서 쉬고 <strong>오후 2시에 출발</strong>해 일몰과 야경만 챙기는 반나절 코스</td>
+          </tr>
+          <tr>
+            <td><strong>C</strong> 텐노지 전망</td>
+            <td>사찰 · 초고층</td>
+            <td>¥8,800</td><td class="no">＋¥1,000</td>
+            <td class="wrap-cell dim">시텐노지와 일본 최고층 아베노 하루카스 300. 예산을 넘기고, <strong>하루카스는 주유패스가 안 먹습니다</strong></td>
+          </tr>
+          <tr>
+            <td><strong>D</strong> 가이유칸</td>
+            <td>수족관 · 바다</td>
+            <td>¥9,200</td><td class="no">＋¥1,400</td>
+            <td class="wrap-cell dim">고래상어를 보는 대형 수족관. <strong>입장료만 ¥2,700</strong>이고 주유패스 대상이 아니라 예산이 가장 많이 깨집니다</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="days">
+
+      <!-- ===== 보충안 A ===== -->
+      <article class="day alt d2">
+        <div class="dhead">
+          <div class="dnum">Plan<b>A</b></div>
+          <h3>텐진바시스지 상점가 & 나카자키초 <span class="badge">대안</span></h3>
+          <div class="date">01.16 SAT</div>
+          <p class="line">먹방이 목적이라면 이쪽이 나라보다 낫습니다. <span class="kw">숙소에서 사카이스지선 한 번에</span> 닿고, 저녁 신세카이까지 환승이 0회입니다.</p>
+          <div class="dpass"><span class="tag">오늘의 패스</span> 지하철 실비 ¥670 · 주유패스 불필요 · 상점가는 전부 도보</div>
+        </div>
+        <div class="slots">
+          <div class="slot">
+            <div class="t">09:30</div>
+            <div>
+              <h4>닛폰바시 → 텐진바시스지6초메</h4>
+              <p>사카이스지선 <span class="kw">직통 6정거장</span>, 갈아타지 않습니다. 나라 갈 때보다 30분 늦게 나가도 됩니다.</p>
+              <div class="cost">¥240 <b>／ 2,088원</b> · 10분</div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">10:00</div>
+            <div>
+              <h4>오사카 시립주택박물관 <span class="jp">住まいのミュージアム</span></h4>
+              <p>역 3번 출구와 <strong>건물로 연결</strong>됩니다. 8층에 에도시대 오사카 거리를 실물 크기로 지어놨고, 조명이 아침→밤으로 바뀝니다. 기모노 대여는 별도.</p>
+              <div class="cost">¥600 <b>／ 5,220원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">11:30</div>
+            <div>
+              <h4>텐진바시스지 상점가 — <span class="jp">2.6km</span></h4>
+              <p>일본에서 가장 긴 아케이드 상점가를 <strong>북에서 남으로 걸어 내려옵니다.</strong> 코롯케·야키토리·타코야키·오코노미야키를 하나씩 사 먹으며 이동하는 게 이 코스의 전부입니다. 관광지 물가가 아니라 <span class="kw">도톤보리보다 3~4할 쌉니다.</span></p>
+              <div class="cost">점심＋간식 ¥1,800 <b>／ 15,660원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">14:00</div>
+            <div>
+              <h4>나카자키초 <span class="jp">中崎町</span> 카페 골목</h4>
+              <p>공습을 피한 낡은 <span class="jp">나가야(長屋)</span>를 개조한 카페와 헌옷 가게가 골목마다 있습니다. 우메다에서 한 정거장인데 분위기가 완전히 다릅니다. 다니마치선 <strong>1정거장</strong> 또는 상점가에서 도보 10분.</p>
+              <div class="cost">¥190 ＋ 커피 ¥600 <b>／ 6,873원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">16:00</div>
+            <div>
+              <h4>텐진바시스지6초메 복귀 → 에비스초</h4>
+              <p>다시 사카이스지선을 타면 <span class="kw">신세카이까지 환승 없이</span> 갑니다. 이 노선 하나로 하루가 끝납니다.</p>
+              <div class="cost">¥240 <b>／ 2,088원</b> · 15분</div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">16:30</div>
+            <div>
+              <h4>츠텐카쿠 → 쿠시카츠 다루마 본점</h4>
+              <p>원안과 동일합니다. 전망대 ¥1,000, 저녁 ¥2,000.</p>
+              <div class="cost">¥3,000 <b>／ 26,100원</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="dfoot"><span>1인 당일 지출 · 원안 대비 <strong class="yes">¥900 절약</strong></span><span class="amt">¥6,900 ／ 60,030원</span></div>
+      </article>
+
+      <!-- ===== 보충안 B ===== -->
+      <article class="day alt d1">
+        <div class="dhead">
+          <div class="dnum">Plan<b>B</b></div>
+          <h3>고베항 야경 <span class="badge">대안</span></h3>
+          <div class="date">01.16 SAT</div>
+          <p class="line">오전은 오사카에서 느긋하게 쓰고 <span class="kw">오후 2시에 출발</span>합니다. 1월 고베 일몰이 17시 10분경이라 딱 맞습니다.</p>
+          <div class="dpass"><span class="tag">오늘의 패스</span> 한신 왕복 ¥840 · 쿠폰은 아래 참고 · 오전은 도보</div>
+        </div>
+        <div class="slots">
+          <div class="slot">
+            <div class="t">오전</div>
+            <div>
+              <h4>숙소 주변에서 회복</h4>
+              <p>쿠로몬 아침, 도구야스지 구경, 늦잠 중 아무거나. <strong>전날까지 이틀을 종일 걸었으니 오전을 비우는 게 핵심입니다.</strong> 체력이 남으면 보충안 A의 상점가를 오전에 붙여도 됩니다.</p>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">14:00</div>
+            <div>
+              <h4>오사카난바 → 고베산노미야</h4>
+              <p>숙소 앞 킨테츠 닛폰바시에서 한 정거장 간 <span class="jp">오사카난바</span>에서 <strong>한신 쾌속급행 직통</strong>을 탑니다. 나라와 마찬가지로 <span class="kw">이 숙소라서 편한 노선</span>입니다.</p>
+              <div class="cost">¥420 <b>／ 3,654원</b> · 약 45분</div>
+              <div class="flag" data-ref><strong>쿠폰 검토</strong> · 한신이 파는 <span class="jp">고베 마치메구리 1day 쿠폰</span>은 왕복 승차권에 고베 시내 이동과 시설 할인권이 묶여 있습니다. 오사카난바 발매가가 <span class="mono">¥1,700</span> 안팎이라 <strong>포트타워까지 올라갈 계획이면 비슷하거나 유리</strong>합니다. 역 창구에서 그날 가격과 포함 시설만 확인하고 고르세요.</div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">15:00</div>
+            <div>
+              <h4>난킨마치 <span class="jp">南京町</span> 차이나타운</h4>
+              <p>산노미야역에서 도보 10분. <span class="jp">로쇼키(老祥記)</span>의 부타망이 개당 ¥110대라 4명이 실컷 먹어도 얼마 안 나옵니다. <span class="kw">가게들이 18시 전후로 일찍 닫으니</span> 야경 전에 먹는 순서가 맞습니다.</p>
+              <div class="cost">¥800 <b>／ 6,960원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">16:30</div>
+            <div>
+              <h4>메리켄파크 <span class="jp">メリケンパーク</span></h4>
+              <p>난킨마치에서 도보 10분. <strong>입장료 없는 야경 명소</strong>입니다. BE KOBE 조형물과 붉은 포트타워가 물에 비칩니다. 해 지기 20분 전에 도착해 하늘색이 바뀌는 걸 보세요.</p>
+              <div class="cost">무료</div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">17:15</div>
+            <div>
+              <h4>고베 포트타워 전망대</h4>
+              <p>일몰과 점등이 겹치는 시간입니다. 리뉴얼 뒤 옥상 데크가 생겨 <strong>바깥에서 바로 볼 수 있습니다</strong>(층에 따라 요금이 갈립니다). 예산이 빠듯하면 이건 빼고 메리켄파크에서만 봐도 충분합니다.</p>
+              <div class="cost">¥1,000~1,200 <b>／ 8,700~10,440원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">18:30</div>
+            <div>
+              <h4>하버랜드 <span class="jp">モザイク</span> — 야경의 정답</h4>
+              <p>포트타워를 <strong>맞은편에서 보는 자리</strong>가 여기입니다. 고베 야경 사진 대부분이 이 데크에서 찍힙니다. 대관람차는 ¥800.</p>
+              <div class="cost">데크 무료 · 관람차 ¥800</div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">19:30</div>
+            <div>
+              <h4>저녁 — umie 푸드코트 또는 소바메시</h4>
+              <p>고베규는 런치도 ¥3,000부터라 이번 예산 밖입니다. <span class="kw">소바메시·뎃판야키</span>가 고베식이면서 값이 맞습니다.</p>
+              <div class="cost">¥1,500 <b>／ 13,050원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">21:00</div>
+            <div>
+              <h4>고베산노미야 → 오사카난바</h4>
+              <p>같은 직통으로 돌아옵니다. 22시경 숙소 도착.</p>
+              <div class="cost">¥420 <b>／ 3,654원</b></div>
+              <div class="flag"><strong>1월 항구는 정말 춥습니다.</strong> 바닷바람 때문에 오사카 시내보다 체감이 3~4℃ 떨어집니다. 장갑·목도리·핫팩을 챙기고, 야경 자리는 <span class="mono">30~40분</span> 이상 버티기 어렵다고 보세요.</div>
+              <div class="flag" data-ref><strong>루미나리에 확인</strong> · 고베 루미나리에는 최근 개최 시기가 <strong>1월 하순</strong>으로 옮겨졌습니다. 2027년 일정이 1월 16일을 포함하면 이 보충안의 가치가 크게 올라가니, 출발 전 개최일을 한 번 확인해 보세요.</div>
+            </div>
+          </div>
+        </div>
+        <div class="dfoot"><span>1인 당일 지출 · 원안 대비 <strong class="yes">¥2,300 절약</strong></span><span class="amt">¥5,500 ／ 47,850원</span></div>
+      </article>
+
+    </div>
+
+    <div class="routes" style="margin-top: 26px;">
+      <div class="route" data-ref>
+        <h4>보충안 C — 시텐노지 & 아베노 하루카스</h4>
+        <div class="path">닛폰바시 <em>—— 사카이스지선 ——</em> 에비스초 <em>／</em> 다니마치선 <em>——</em> 시텐노지마에유히가오카</div>
+        <p><span class="jp">시텐노지(四天王寺)</span>는 593년 창건된 일본 최초의 관영 사찰입니다. 경내는 무료, 본당과 정원이 각 ¥300. 이어서 <strong>아베노 하루카스 300</strong>(일본 최고층 300m) 전망대 ¥2,000, 텐노지 동물원 ¥500, 저녁은 신세카이.</p>
+        <p><span class="no">주의 —</span> 하루카스 전망대는 <strong>주유패스 대상이 아닙니다.</strong> 패스를 새로 사도 전망대는 따로 내야 해서, 예산이 1인 ¥1,000 정도 넘칩니다.</p>
+        <div class="spec"><span>1인 <b>¥8,800</b></span><span>／ 76,560원</span><span class="no">원안 대비 ＋¥1,000</span></div>
+      </div>
+
+      <div class="route" data-ref>
+        <h4>보충안 D — 가이유칸 & 덴포잔</h4>
+        <div class="path">닛폰바시 <em>—— 사카이스지선 ——</em> 사카이스지혼마치 <em>환승</em> <em>—— 주오선 ——</em> 오사카코 · <b>25분 ¥290</b></div>
+        <p>세계 최대급 수족관 <span class="jp">가이유칸(海遊館)</span>. 고래상어가 있는 8층 높이 대수조를 나선형으로 내려오며 봅니다. 반나절이 통째로 듭니다. 옆에 덴포잔 대관람차 ¥900, 산타마리아 유람선 ¥1,800.</p>
+        <p><span class="no">주의 —</span> 가이유칸 입장료 <strong>¥2,700은 주유패스로 무료가 되지 않습니다</strong>(할인만). 넷 중 예산이 가장 많이 깨지는 안이라, 수족관을 꼭 보고 싶은 게 아니면 권하지 않습니다.</p>
+        <div class="spec"><span>1인 <b>¥9,200</b></span><span>／ 80,040원</span><span class="no">원안 대비 ＋¥1,400</span></div>
+      </div>
+    </div>
+
+    <p class="dim" style="margin: 14px 2px 0;">
+      어느 안으로 바꾸든 <strong>주유패스는 2일차 하루만 쓰는 결론이 그대로</strong>입니다. 2일권(¥5,500)은 연속 이틀 조건이라 2일차와 4일차처럼 하루 건너뛴 조합에는 쓸 수 없습니다.
+    </p>
+  </section>
+
+  <section>
     <div class="shead"><h2>실전 메모</h2><p>4명 모두 한 번씩 읽어두면 좋은 것들</p></div>
     <div class="cols">
-
-      <div class="panel">
-        <h3>돈 · 결제</h3>
-        <ul>
-          <li><strong>트래블월렛 / 트래블로그</strong>에 엔화를 미리 충전. 편의점·백화점·체인점은 이걸로 다 됩니다.</li>
-          <li>현금은 <strong>1인 ¥15,000~20,000</strong>. 쿠로몬 시장, 쿠시카츠 다루마, 나라 소규모 점포는 현금이 편합니다.</li>
-          <li><strong>ICOCA</strong>를 4명 각자 발급. 주유패스를 안 쓰는 날의 지하철·버스가 이걸로 해결됩니다.</li>
-          <li>고정 환율 <span class="mono">¥100 = 870원</span> 기준. 실제 환전 시점 환율이 다르면 <strong>총액이 아니라 쇼핑 예산부터</strong> 조정하세요.</li>
-        </ul>
-      </div>
 
       <div class="panel">
         <h3>피치항공</h3>
         <ul>
           <li>기내 반입 <strong>2개 합산 7kg</strong>. 4인이면 위탁수하물 2개만 사서 나눠 담는 게 보통 이득입니다.</li>
           <li>위탁수하물·좌석 지정은 <strong>사전 구매가 훨씬 쌉니다.</strong> 공항 현장 요금은 배 이상.</li>
-          <li>간사이공항은 <strong>제2터미널</strong>. 전철역(T1)에서 무료 셔틀 7~10분.</li>
           <li>국제선 카운터 마감 <strong>출발 50분 전</strong>, 온라인 체크인은 24시간 전부터.</li>
         </ul>
       </div>
@@ -1302,17 +1634,16 @@
           <li>낮 최고 <strong>9℃</strong> / 아침 최저 <strong>2℃</strong> 안팎. 서울보다 덜 춥지만 습해서 체감이 낮습니다.</li>
           <li>눈은 거의 없고 비도 적은 편. 접이 우산 하나면 충분.</li>
           <li>실내·전철 난방이 아주 셉니다. <strong>두꺼운 옷 한 벌보다 얇게 여러 겹</strong>이 정답.</li>
-          <li>우메다 공중정원(옥상)과 교토 아라시야마는 별도로 춥습니다. 장갑·목도리 필수.</li>
+          <li>전망대 옥상·강변·항구는 별도로 춥습니다. <strong>장갑과 목도리</strong>는 빼지 마세요.</li>
         </ul>
       </div>
 
       <div class="panel">
-        <h3>숙소 200% 쓰기</h3>
+        <h3>환율이 달라지면</h3>
         <ul>
-          <li><strong>주방</strong> — 아침 4일치를 숙소에서 해결하면 4인 기준 12~16만 원이 굳습니다. 첫날 밤 장보기가 핵심.</li>
-          <li><strong>세탁기</strong> — 3일차 밤에 한 번 돌리면 캐리어를 한 단계 작게 가져갈 수 있습니다.</li>
-          <li><strong>위치</strong> — 도톤보리 도보 8분, 쿠로몬 5분, 킨테츠 나라 직통. 이 일정이 이 숙소라서 성립합니다.</li>
-          <li>아파트먼트형은 프런트 상주 시간이 짧을 수 있으니 <strong>늦은 체크인·짐 보관 가능 여부</strong>를 미리 확인.</li>
+          <li>이 문서의 모든 원화는 <span class="mono">¥100 = 870원</span> 고정 환산입니다.</li>
+          <li>실제 환율이 오르면 <strong>총예산이 아니라 쇼핑 예산부터</strong> 줄이세요. 교통·입장료는 건드릴 수 없는 고정비입니다.</li>
+          <li>환율이 <span class="mono">900원</span>이 되면 1인 부담은 <span class="mono">약 306,000원</span>, <span class="mono">850원</span>이면 <span class="mono">약 289,000원</span>입니다.</li>
         </ul>
       </div>
 
@@ -1352,3 +1683,35 @@
   </footer>
 
 </div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById('refbtn');
+  var label = document.getElementById('reflabel');
+  var count = document.getElementById('refn');
+  var KEY = 'osaka-2027-hide-ref';
+
+  count.textContent = document.querySelectorAll('[data-ref]').length;
+
+  function apply(hidden) {
+    root.classList.toggle('hide-ref', hidden);
+    btn.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+    label.textContent = hidden ? '참고 자료 펼치기' : '참고 자료 접기';
+  }
+
+  var saved = false;
+  try { saved = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  apply(saved);
+
+  btn.addEventListener('click', function () {
+    var next = !root.classList.contains('hide-ref');
+    apply(next);
+    try { localStorage.setItem(KEY, next ? '1' : '0'); } catch (e) {}
+  });
+
+  document.getElementById('printbtn').addEventListener('click', function () {
+    window.print();
+  });
+})();
+</script>
