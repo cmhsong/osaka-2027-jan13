@@ -20,14 +20,14 @@ $head = @'
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="2027년 1월 13~17일, 성인 4명 오사카 4박 5일 여행 일정표. 패스권 판정, 목적지별 이동 경로, 숙소 근처 맛집과 ATM, 1인 30만 원 예산 배분.">
+<meta name="description" content="2027년 1월 13~17일, 성인 4명 오사카 4박 5일 여행 일정표 10장. 3일차 교토 투어 2인·유니버설 스튜디오 2인 분리 운영, 검색과 구글맵 길찾기, 패스권 판정과 예산 배분.">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="theme-color" content="#eceeef" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f161c" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:title" content="오사카 4박 5일">
-<meta property="og:description" content="2027.01.13–17 · 성인 4명 · 패스권 판정과 1인 30만 원 예산 배분">
+<meta property="og:description" content="2027.01.13–17 · 성인 4명 · 10장 · 3일차 교토 2인 / USJ 2인 분리">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍢</text></svg>">
 <style>
   :root { color-scheme: light dark; }
