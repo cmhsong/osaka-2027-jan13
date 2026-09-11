@@ -1,85 +1,103 @@
 <title>오사카 4박 5일</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
 <style>
+  /* ══════════════════════════════════════════════════════════
+     和 — 生成りの和紙に墨、藍で組み、朱を印にだけ使う
+     낮: 생성 화지(生成り) 바탕 · 먹(墨) 글씨 · 쪽빛(藍) 구조 · 주홍(朱) 도장
+     밤: 남묵(藍墨)의 밤 · 종이빛 글씨
+     ══════════════════════════════════════════════════════════ */
   :root {
-    --ground: #eceeef;
-    --surface: #ffffff;
-    --surface-2: #f5f6f6;
-    --line: #d5dadc;
-    --line-soft: #e3e7e8;
-    --ink: #14202a;
-    --ink-2: #40525f;
-    --ink-3: #6b7c88;
-    --vermilion: #c03c22;
-    --indigo: #1f4e6b;
-    --moss: #4a7551;
-    --amber: #a8730f;
-    --slate: #55636e;
+    --ground: #e6e1d3;          /* 生成り — 표백하지 않은 화지 */
+    --surface: #f6f3ea;         /* 楮紙 — 카드가 되는 밝은 종이 */
+    --surface-2: #ece7d9;
+    --line: #cbc4b0;
+    --line-soft: #ded7c5;
+    --ink: #1b1915;             /* 墨 */
+    --ink-2: #4c483e;
+    --ink-3: #807a68;
+    --vermilion: #b93a26;       /* 朱 — 인주 */
+    --indigo: #1d4468;          /* 藍 */
+    --moss: #4a6b45;            /* 松葉 */
+    --amber: #a2700f;           /* 山吹 */
+    --slate: #5d5a50;           /* 鈍色 */
     --accent: var(--vermilion);
-    --mark-bg: #ffe08a;
-    --mark-ink: #14202a;
-    --shadow: 0 1px 2px rgba(20, 32, 42, .06), 0 8px 24px -16px rgba(20, 32, 42, .28);
+    --mark-bg: #f2d99a;
+    --mark-ink: #1b1915;
+    --grain: rgba(94, 84, 58, .055);
+    --wave: rgba(29, 68, 104, .16);
+    --shadow: 0 1px 1px rgba(60, 50, 28, .07), 0 10px 26px -18px rgba(60, 50, 28, .45);
   }
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --ground: #0f161c;
-      --surface: #161f27;
-      --surface-2: #1b2630;
-      --line: #2b3945;
-      --line-soft: #232f3a;
-      --ink: #e3e9ec;
-      --ink-2: #a9bac5;
-      --ink-3: #7d8f9c;
-      --vermilion: #ef6a4c;
-      --indigo: #6db4dc;
-      --moss: #83b98c;
-      --amber: #e0ab52;
-      --slate: #9aabb7;
-      --mark-bg: #7d5a10;
-      --mark-ink: #fff4dc;
-      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px -18px rgba(0, 0, 0, .8);
+      --ground: #14171b;        /* 藍墨の夜 */
+      --surface: #1c2027;
+      --surface-2: #222731;
+      --line: #333a45;
+      --line-soft: #2a303a;
+      --ink: #ebe5d6;           /* 종이빛 */
+      --ink-2: #b3ae9e;
+      --ink-3: #837f72;
+      --vermilion: #e2705c;
+      --indigo: #7cb3d8;
+      --moss: #8fb887;
+      --amber: #d7a747;
+      --slate: #9a978c;
+      --mark-bg: #6d5417;
+      --mark-ink: #fdf5e2;
+      --grain: rgba(255, 250, 232, .028);
+      --wave: rgba(124, 179, 216, .17);
+      --shadow: 0 1px 2px rgba(0, 0, 0, .45), 0 12px 30px -20px rgba(0, 0, 0, .85);
     }
   }
 
   :root[data-theme="dark"] {
-    --ground: #0f161c;
-    --surface: #161f27;
-    --surface-2: #1b2630;
-    --line: #2b3945;
-    --line-soft: #232f3a;
-    --ink: #e3e9ec;
-    --ink-2: #a9bac5;
-    --ink-3: #7d8f9c;
-    --vermilion: #ef6a4c;
-    --indigo: #6db4dc;
-    --moss: #83b98c;
-    --amber: #e0ab52;
-    --slate: #9aabb7;
-    --mark-bg: #7d5a10;
-    --mark-ink: #fff4dc;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px -18px rgba(0, 0, 0, .8);
+    --ground: #14171b;
+    --surface: #1c2027;
+    --surface-2: #222731;
+    --line: #333a45;
+    --line-soft: #2a303a;
+    --ink: #ebe5d6;
+    --ink-2: #b3ae9e;
+    --ink-3: #837f72;
+    --vermilion: #e2705c;
+    --indigo: #7cb3d8;
+    --moss: #8fb887;
+    --amber: #d7a747;
+    --slate: #9a978c;
+    --mark-bg: #6d5417;
+    --mark-ink: #fdf5e2;
+    --grain: rgba(255, 250, 232, .028);
+    --wave: rgba(124, 179, 216, .17);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .45), 0 12px 30px -20px rgba(0, 0, 0, .85);
   }
 
   * { box-sizing: border-box; }
 
   /* ---------- toolbar ---------- */
+  /* 暖簾 — 문서 위에 드리운 천 한 폭 */
   .bar {
     position: sticky; top: 0; z-index: 20;
-    background: var(--ground);
+    background: var(--surface-2);
     border-bottom: 1px solid var(--line);
+    box-shadow: 0 1px 0 var(--surface), 0 2px 0 var(--line-soft);
   }
   .bar-in {
     max-width: 1000px; margin: 0 auto; padding: 9px 22px;
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   }
   .bar-id {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3);
+    font-family: "Shippori Mincho", "Gowun Batang", serif;
+    font-size: 12.5px; font-weight: 700; letter-spacing: .06em; color: var(--ink-2);
     font-variant-numeric: tabular-nums;
     margin-right: auto;
+    display: inline-flex; align-items: baseline; gap: 8px;
+  }
+  .bar-id em {
+    font-style: normal; font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px; letter-spacing: .12em; color: var(--ink-3); font-weight: 400;
   }
   .bar-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
@@ -168,7 +186,11 @@
   :root.hide-ref [data-ref] { display: none !important; }
 
   body {
-    background: var(--ground);
+    background-color: var(--ground);
+    /* 화지(和紙)의 결 — 가로세로로 얽힌 섬유를 아주 옅은 선으로 */
+    background-image:
+      repeating-linear-gradient(90deg, var(--grain) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(0deg, var(--grain) 0 1px, transparent 1px 4px);
     color: var(--ink);
     font-family: "IBM Plex Sans KR", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Malgun Gothic", system-ui, sans-serif;
     font-size: 15px;
@@ -193,15 +215,16 @@
     font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3);
   }
 
+  /* 명조 두 벌을 겹쳐 쓴다 — 일본어 글자는 明朝(Shippori), 한글은 고운바탕 */
   h1 {
-    font-family: "Gowun Batang", "Nanum Myeongjo", serif;
-    font-size: clamp(38px, 7vw, 62px);
-    font-weight: 700; line-height: 1.08; letter-spacing: -.02em;
+    font-family: "Shippori Mincho", "Gowun Batang", "Nanum Myeongjo", serif;
+    font-size: clamp(36px, 6.6vw, 58px);
+    font-weight: 700; line-height: 1.1; letter-spacing: -.015em;
   }
 
   h2 {
-    font-family: "Gowun Batang", "Nanum Myeongjo", serif;
-    font-size: 25px; font-weight: 700; letter-spacing: -.01em;
+    font-family: "Shippori Mincho", "Gowun Batang", "Nanum Myeongjo", serif;
+    font-size: 24px; font-weight: 700; letter-spacing: 0;
   }
 
   .mono { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
@@ -228,8 +251,45 @@
   }
 
   /* ---------- masthead ---------- */
-  .mast { display: flex; flex-direction: column; gap: 18px; }
-  .mast .sub { max-width: 62ch; color: var(--ink-2); font-size: 16px; }
+  .mast {
+    display: flex; flex-direction: column; gap: 18px;
+    position: relative;
+    padding-bottom: 30px;
+  }
+  /* 青海波 — 겹치는 물결. 물의 도시 오사카를 표제 아래 한 줄로 */
+  .mast::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: 0; height: 16px;
+    background-image:
+      radial-gradient(circle at 50% 100%, transparent 5px, var(--wave) 5px 6px, transparent 6px),
+      radial-gradient(circle at 50% 100%, transparent 10px, var(--wave) 10px 11px, transparent 11px),
+      radial-gradient(circle at 0 100%, transparent 5px, var(--wave) 5px 6px, transparent 6px),
+      radial-gradient(circle at 100% 100%, transparent 5px, var(--wave) 5px 6px, transparent 6px);
+    background-size: 28px 16px;
+    background-repeat: repeat-x;
+    opacity: .9;
+  }
+  .mast .sub { max-width: 60ch; color: var(--ink-2); font-size: 16px; }
+
+  .mast .lead { display: flex; align-items: flex-start; gap: 22px; flex-wrap: wrap; }
+  .mast .lead > div { flex: 1 1 320px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* 朱印 — 표제 옆 낙관 */
+  .seal {
+    flex: 0 0 auto;
+    width: 86px; height: 86px;
+    display: grid; place-content: center; gap: 2px;
+    border: 2.5px solid var(--vermilion);
+    border-radius: 4px;
+    color: var(--vermilion);
+    font-family: "Shippori Mincho", serif;
+    font-weight: 700; line-height: 1.15; text-align: center;
+    transform: rotate(-3deg);
+    background:
+      repeating-linear-gradient(45deg, transparent 0 3px, rgba(185, 58, 38, .05) 3px 4px);
+  }
+  .seal b { font-size: 21px; letter-spacing: .06em; display: block; }
+  .seal i { font-style: normal; font-size: 10px; letter-spacing: .2em; opacity: .85; }
 
   .rate {
     display: inline-flex; align-items: baseline; gap: 10px; align-self: flex-start;
@@ -239,29 +299,47 @@
   }
   .rate span { color: var(--ink-3); letter-spacing: .1em; font-size: 10.5px; text-transform: uppercase; }
 
-  /* ---------- table of contents ---------- */
+  /* ---------- 목차 — 품책(品冊)처럼 藍으로 묶는다 ---------- */
   .toc {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
-    gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 3px; overflow: hidden;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--indigo);
+    border: 2px solid var(--indigo);
+    border-radius: 3px; overflow: hidden;
   }
   .toc a {
     background: var(--surface); padding: 12px 14px; text-decoration: none; color: var(--ink);
     display: flex; align-items: baseline; gap: 9px; font-size: 13.5px; font-weight: 500;
   }
-  .toc a:hover { background: var(--surface-2); }
+  .toc a:hover { background: var(--surface-2); color: var(--indigo); }
+  .toc a:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
   .toc a i {
     font-style: normal; font-family: "IBM Plex Mono", monospace; font-size: 11px;
-    color: var(--accent); font-variant-numeric: tabular-nums;
+    color: var(--vermilion); font-variant-numeric: tabular-nums; font-weight: 500;
   }
   .toc a span { color: var(--ink-3); font-size: 12px; font-weight: 400; }
+  .toc-cap {
+    display: flex; align-items: center; gap: 9px;
+    font-family: "Shippori Mincho", "Gowun Batang", serif;
+    font-size: 13px; font-weight: 700; color: var(--indigo);
+    margin-bottom: 8px;
+  }
+  .toc-cap::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .toc-cap em { font-style: normal; font-size: 11px; color: var(--ink-3); font-weight: 400; letter-spacing: .1em; }
 
   /* ---------- section head ---------- */
-  .shead { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-  .shead p { margin: 0; color: var(--ink-3); font-size: 13.5px; }
+  .shead { display: flex; align-items: center; gap: 13px; margin-bottom: 20px; flex-wrap: wrap; }
+  .shead p { margin: 0; color: var(--ink-3); font-size: 13.5px; align-self: flex-end; }
+  /* 장 번호를 인주 도장으로 */
   .chno {
-    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .14em;
-    color: #fff; background: var(--accent); border-radius: 2px; padding: 2px 7px;
-    font-variant-numeric: tabular-nums; align-self: center;
+    font-family: "IBM Plex Mono", monospace; font-size: 13px; font-weight: 500;
+    letter-spacing: .06em;
+    color: #fdf8ee; background: var(--vermilion);
+    border-radius: 3px; padding: 5px 8px 4px;
+    font-variant-numeric: tabular-nums;
+    align-self: center;
+    transform: rotate(-2deg);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .12);
   }
 
   /* ---------- locked-in facts ---------- */
@@ -291,7 +369,7 @@
   }
   .team.a { --tc: var(--moss); }
   .team.b { --tc: var(--indigo); }
-  .team h4 { font-size: 16px; font-weight: 700; }
+  .team h4 { font-family: "Shippori Mincho", "Gowun Batang", serif; font-size: 16px; font-weight: 700; }
   .team h4 b { color: var(--tc); }
   .team .who {
     font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-3);
@@ -324,9 +402,17 @@
   table { border-collapse: collapse; width: 100%; min-width: 520px; }
   th, td { padding: 10px 15px; text-align: right; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
   th:first-child, td:first-child { text-align: left; }
+  /* 市松 — 표 머리에 옅은 바둑판 */
   thead th {
     font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: .12em;
-    text-transform: uppercase; color: var(--ink-3); font-weight: 400; background: var(--surface-2);
+    text-transform: uppercase; color: var(--ink-2); font-weight: 500;
+    background-color: var(--surface-2);
+    background-image:
+      linear-gradient(45deg, var(--grain) 25%, transparent 25% 75%, var(--grain) 75%),
+      linear-gradient(45deg, var(--grain) 25%, transparent 25% 75%, var(--grain) 75%);
+    background-size: 12px 12px;
+    background-position: 0 0, 6px 6px;
+    border-bottom: 1px solid var(--line);
   }
   tbody td:not(:first-child) { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
   tbody td:first-child { font-weight: 500; }
@@ -361,7 +447,7 @@
   /* ---------- route cards ---------- */
   .routes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
   .route { background: var(--surface); padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; }
-  .route h4 { font-size: 15px; font-weight: 600; line-height: 1.45; }
+  .route h4 { font-family: "Shippori Mincho", "Gowun Batang", serif; font-size: 15px; font-weight: 700; line-height: 1.45; }
   .route .path {
     font-family: "IBM Plex Mono", monospace; font-size: 12px; line-height: 1.75; color: var(--ink-2);
     background: var(--surface-2); border: 1px solid var(--line-soft);
@@ -421,8 +507,8 @@
     grid-row: span 2; font-family: "IBM Plex Mono", monospace;
     font-size: 12px; letter-spacing: .14em; color: var(--day); font-weight: 500;
   }
-  .dnum b { display: block; font-family: "Gowun Batang", serif; font-size: 28px; letter-spacing: 0; line-height: 1; margin-top: 4px; font-weight: 700; }
-  .dhead h3 { font-family: "Gowun Batang", "Nanum Myeongjo", serif; font-size: 21px; font-weight: 700; }
+  .dnum b { display: block; font-family: "Shippori Mincho", "Gowun Batang", serif; font-size: 28px; letter-spacing: 0; line-height: 1; margin-top: 4px; font-weight: 700; }
+  .dhead h3 { font-family: "Shippori Mincho", "Gowun Batang", "Nanum Myeongjo", serif; font-size: 20px; font-weight: 700; }
   .dhead .date { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; text-align: right; }
   .dhead .line { grid-column: 2 / -1; color: var(--ink-2); font-size: 13.5px; margin: 0; }
 
@@ -451,10 +537,14 @@
     content: ""; position: absolute; left: -13px; top: 10px;
     width: 5px; height: 5px; border-radius: 50%; background: var(--day); opacity: .55;
   }
-  .slot h4 { font-size: 15px; font-weight: 600; line-height: 1.5; }
+  .slot h4 { font-family: "Shippori Mincho", "Gowun Batang", serif; font-size: 15.5px; font-weight: 700; line-height: 1.5; }
   .slot p { margin: 3px 0 0; color: var(--ink-2); font-size: 13.5px; }
   .slot .kw { color: var(--ink); font-weight: 500; }
-  .jp { font-size: 12.5px; color: var(--ink-3); }
+  /* 일본어는 明朝로 — 간판에서 보게 될 글자 그대로 */
+  .jp {
+    font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-size: 13px; color: var(--ink-3); letter-spacing: .02em;
+  }
 
   .cost {
     display: inline-block; margin-top: 5px;
@@ -479,57 +569,74 @@
   .dfoot .amt { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; color: var(--indigo); font-weight: 700; font-size: 14px; }
   tfoot td:not(:first-child) { color: var(--indigo); }
 
-  /* ---------- 장 끝의 이동 버튼 ---------- */
+  /* ---------- 되돌아가는 세 버튼 ----------
+     역할이 다르니 생김새도 다르게 둔다
+       ① 이 장 처음으로 — 테두리만 있는 종이빛 · 약
+       ② 목차          — 藍으로 꽉 채운 사각 · 중
+       ③ 홈(우하단)    — 朱 인장 · 강                                */
   .chend {
-    display: flex; justify-content: flex-end; align-items: center; gap: 8px;
-    margin-top: 18px; flex-wrap: wrap;
+    display: flex; justify-content: flex-end; align-items: center; gap: 10px;
+    margin-top: 24px; padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+    flex-wrap: wrap;
   }
   .chend a {
-    display: inline-flex; align-items: center; gap: 6px;
+    display: inline-flex; align-items: center; gap: 7px;
     font-family: "IBM Plex Sans KR", system-ui, sans-serif;
-    font-size: 12px; font-weight: 500; text-decoration: none;
-    color: var(--ink-3);
-    background: var(--surface);
-    border: 1px solid var(--line); border-radius: 2px;
-    padding: 5px 11px;
+    font-size: 12.5px; font-weight: 600; text-decoration: none;
+    border-radius: 2px; padding: 7px 14px; line-height: 1.3;
   }
-  .chend a:hover { color: var(--accent); border-color: var(--accent); }
+  .chend a.up {                       /* ① 약 */
+    color: var(--ink-2);
+    background: transparent;
+    border: 1px solid var(--line);
+  }
+  .chend a.up:hover { color: var(--ink); border-color: var(--ink-3); background: var(--surface); }
+  .chend a.top {                      /* ② 중 */
+    color: #f6f3ea;
+    background: var(--indigo);
+    border: 1px solid var(--indigo);
+    letter-spacing: .05em;
+  }
+  .chend a.top:hover { background: var(--ink); border-color: var(--ink); }
   .chend a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .chend a.top { color: var(--ink-2); }
-  .chend svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .chend svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  @media (prefers-reduced-motion: no-preference) {
+    .chend a { transition: background-color .12s ease, color .12s ease, border-color .12s ease; }
+  }
 
   /* 스티키 툴바에 제목이 가리지 않도록 */
   .wrap > section, .mast { scroll-margin-top: 62px; }
   html { scroll-behavior: smooth; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
-  /* ---------- home button ---------- */
+  /* ③ 홈 — 우하단에 찍히는 붉은 낙관 */
   .home {
     position: fixed;
     right: max(18px, env(safe-area-inset-right));
     bottom: max(18px, env(safe-area-inset-bottom));
     z-index: 30;
-    display: inline-flex; align-items: center; gap: 7px;
-    padding: 9px 14px;
-    font-family: "IBM Plex Sans KR", system-ui, sans-serif;
-    font-size: 12.5px; font-weight: 500; line-height: 1.4;
-    color: var(--ink-2);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 3px;
-    box-shadow: var(--shadow);
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 16px;
+    font-family: "Shippori Mincho", "Gowun Batang", serif;
+    font-size: 13.5px; font-weight: 700; line-height: 1.3; letter-spacing: .08em;
+    color: #fdf8ee;
+    background: var(--vermilion);
+    border: 2px solid var(--vermilion);
+    border-radius: 4px;
+    box-shadow: 0 6px 18px -8px rgba(185, 58, 38, .7);
     cursor: pointer;
-    opacity: 0; visibility: hidden; transform: translateY(6px);
+    opacity: 0; visibility: hidden; transform: translateY(8px);
   }
-  .home.on { opacity: 1; visibility: visible; transform: none; }
-  .home:hover { color: var(--ink); border-color: var(--ink-3); }
-  .home:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .home svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+  .home.on { opacity: 1; visibility: visible; transform: rotate(-2deg); }
+  .home:hover { background: var(--ink); border-color: var(--ink); }
+  .home:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .home svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; }
   @media (prefers-reduced-motion: no-preference) {
-    .home { transition: opacity .16s ease, transform .16s ease, border-color .12s ease, color .12s ease; }
+    .home { transition: opacity .18s ease, transform .18s ease, background-color .14s ease, border-color .14s ease; }
   }
   @media (max-width: 620px) {
-    .home { padding: 9px 12px; }
+    .home { padding: 11px 13px; }
     .home span { display: none; }
   }
 
@@ -594,8 +701,12 @@
     }
 
     body { font-size: 9.4pt; line-height: 1.5; background: #fff; }
-    .bar, .toc, .empty, a.gm, .home, .chend { display: none !important; }
+    .bar, .toc, .toc-cap, .empty, a.gm, .home, .chend { display: none !important; }
     .wrap { max-width: none; padding: 0; gap: 0; }
+    body { background-image: none; }
+    .mast::after { display: none; }
+    thead th { background-image: none; }
+    .chno, .home, .seal { transform: none; }
 
     h1 { font-size: 25pt; }
     h2 { font-size: 13.5pt; }
@@ -629,7 +740,7 @@
 
 <div class="bar">
   <div class="bar-in">
-    <div class="bar-id">Osaka · 2027.01.13—17 · 4인 · 10장</div>
+    <div class="bar-id">大阪 <em>2027.01.13—17 · 4인 · 10장</em></div>
     <div class="find">
       <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
       <input id="q" type="search" placeholder="검색 — 장소·금액·노선·메모" autocomplete="off" spellcheck="false" aria-label="일정표 검색">
@@ -660,10 +771,16 @@
 <div class="wrap">
 
   <header class="mast" id="top">
-    <div class="eyebrow">2027.01.13 wed — 01.17 sun · 성인 4명 · 4박 5일 · 10장</div>
-    <h1>오사카 4박 5일</h1>
-    <p class="sub">닛폰바시 <span class="mono">1-11-6</span>에 베이스를 두고 오사카 시내·교토·나라를 도는 먹방＋명소 일정. <strong>3일차 하루만 2인＋2인으로 나뉘어</strong> 한 팀은 교토 원데이 투어, 한 팀은 유니버설 스튜디오 재팬으로 갑니다. 나머지 나흘은 4명이 함께 움직입니다.</p>
-    <div class="rate"><span>고정 환율</span> ¥100 = 870원</div>
+    <div class="lead">
+      <div>
+        <div class="eyebrow">2027.01.13 wed — 01.17 sun · 성인 4명 · 4박 5일 · 10장</div>
+        <h1>오사카 4박 5일</h1>
+        <p class="sub">닛폰바시 <span class="mono">1-11-6</span>에 베이스를 두고 오사카 시내·교토·나라를 도는 먹방＋명소 일정. <strong>3일차 하루만 2인＋2인으로 나뉘어</strong> 한 팀은 교토 원데이 투어, 한 팀은 유니버설 스튜디오 재팬으로 갑니다. 나머지 나흘은 4명이 함께 움직입니다.</p>
+        <div class="rate"><span>고정 환율</span> ¥100 = 870원</div>
+      </div>
+      <div class="seal" aria-hidden="true"><b>大阪</b><i>四泊五日</i></div>
+    </div>
+    <div class="toc-cap">目次 · 목차 <em>전체 10장</em></div>
     <nav class="toc">
       <a href="#ch1"><i>01</i> 개요 · 조 편성 <span></span></a>
       <a href="#ch2"><i>02</i> 예산 · 현금 <span></span></a>
@@ -1818,7 +1935,7 @@
   var softScroll = !window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var chapters = Array.prototype.slice.call(document.querySelectorAll('.wrap > section'));
   var UP_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="m5.5 11.5 6.5-6.5 6.5 6.5"/></svg>';
-  var HOME_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 20v-6h5v6"/></svg>';
+  var LIST_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
 
   function scrollToEl(el) {
     if (!el) return;
@@ -1834,8 +1951,8 @@
     var nav = document.createElement('div');
     nav.className = 'chend';
     nav.innerHTML =
-      '<a href="#' + sec.id + '">' + UP_SVG + label + '</a>' +
-      '<a href="#top" class="top">' + HOME_SVG + '목차</a>';
+      '<a class="up" href="#' + sec.id + '">' + UP_SVG + label + '</a>' +
+      '<a class="top" href="#top">' + LIST_SVG + '목차 10장</a>';
     if (title) nav.firstChild.setAttribute('title', title.textContent.trim() + ' 맨 위로');
     sec.appendChild(nav);
   });
