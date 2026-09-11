@@ -395,8 +395,10 @@
 
   .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 3px; background: var(--surface); }
   table { border-collapse: collapse; width: 100%; min-width: 520px; }
-  th, td { padding: 10px 15px; text-align: right; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+  th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid var(--line-soft); white-space: nowrap; vertical-align: top; }
   th:first-child, td:first-child { text-align: left; }
+  /* 줄마다 눈이 미끄러지지 않게 한 칸 걸러 아주 옅게 */
+  tbody tr:nth-child(even):not(.pick):not(.grp) td { background: rgba(128, 122, 104, .045); }
   /* 市松 — 표 머리에 옅은 바둑판 */
   thead th {
     font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: .12em;
@@ -410,8 +412,9 @@
     border-bottom: 1px solid var(--line);
   }
   tbody td:not(:first-child) { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
-  tbody td:first-child { font-weight: 500; }
+  tbody td:first-child { font-weight: 600; color: var(--ink); min-width: 8em; }
   tbody tr:last-child td { border-bottom: none; }
+  td.wrap-cell { line-height: 1.6; }
   tfoot td { border-top: 1px solid var(--line); border-bottom: none; font-weight: 600; background: var(--surface-2); font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
   tfoot td:first-child { font-family: "IBM Plex Sans KR", sans-serif; }
   .dim { color: var(--ink-3); font-size: 13px; }
@@ -680,12 +683,67 @@
     .sel select { font-size: 12.5px; padding: 7px 8px; }
     .btn { padding: 7px 11px; }
 
-    /* 표 — 옆으로 밀지 말고 줄을 접는다 */
-    table { min-width: 0; }
-    th, td { white-space: normal; padding: 9px 10px; font-size: 13px; }
+    /* ── 표를 항목 카드로 펼친다 ──
+       칸을 좁게 밀어 넣는 대신, 한 줄을 하나의 카드로 세우고
+       칸 이름을 왼쪽에 붙여 준다. 머리글 줄은 감춘다.          */
+    .scroll { overflow-x: visible; border: 0; background: transparent; border-radius: 0; }
+    table, tbody, tfoot, tr, td { display: block; width: 100%; }
+    thead { display: none; }
+    table { min-width: 0; border-collapse: separate; }
+
+    tbody tr, tfoot tr {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 12px 14px 10px;
+      margin-bottom: 10px;
+    }
+    tbody tr.pick { border-color: var(--indigo); border-left-width: 3px; }
+    tbody tr:nth-child(even):not(.pick):not(.grp) td { background: transparent; }
+    tbody tr:last-child td, tfoot td { border-bottom: none; }
+
+    /* 카드의 첫 줄 = 이름 */
+    tbody td:first-child, tfoot td:first-child {
+      font-family: "Shippori Mincho", "Gowun Batang", serif;
+      font-size: 16px; font-weight: 700; color: var(--ink);
+      min-width: 0; padding: 0 0 8px; border: 0;
+      line-height: 1.4;
+    }
+    tbody td:first-child::before, tfoot td:first-child::before { display: none; }
+
+    /* 나머지 칸 = 이름표 + 값 */
+    tbody td, tfoot td {
+      display: flex; align-items: baseline; gap: 10px;
+      text-align: left; white-space: normal;
+      padding: 4px 0; border: 0; font-size: 13.5px;
+      background: transparent !important;
+    }
+    tbody td::before, tfoot td::before {
+      content: attr(data-label);
+      flex: 0 0 4.6em;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--ink-3); font-weight: 400;
+      padding-top: 2px;
+    }
+    tbody td.wrap-cell, tfoot td.wrap-cell { flex-direction: column; gap: 3px; padding-top: 7px; }
+    tbody td.wrap-cell::before, tfoot td.wrap-cell::before { flex: none; }
+    tbody td:empty { display: none; }
     td.wrap-cell, .wrap-cell { min-width: 0; }
-    tbody td:first-child { min-width: 6.5em; }
-    thead th { font-size: 9.5px; letter-spacing: .08em; }
+
+    /* 표 안의 구간 머리글 */
+    tr.grp { border: 0; background: transparent; padding: 6px 0 2px; margin-bottom: 4px; }
+    tr.grp td {
+      display: block; background: transparent; padding: 0;
+      font-family: "Shippori Mincho", "Gowun Batang", serif;
+      font-size: 14px; font-weight: 700; letter-spacing: 0;
+      text-transform: none; color: var(--indigo);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 6px;
+    }
+    tr.grp td::before { display: none; }
+
+    tfoot tr { border-color: var(--indigo); border-width: 2px; }
 
     /* 표제 · 목차 */
     h2 { font-size: 21px; }
@@ -724,9 +782,10 @@
     h1 { font-size: 33px; }
     .mast .sub { font-size: 15px; }
     .toc { grid-template-columns: 1fr 1fr; }
-    th, td { padding: 8px; font-size: 12.5px; }
     .rate { font-size: 11.5px; padding: 6px 11px; }
     .slot h4 { font-size: 15px; }
+    tbody td, tfoot td { font-size: 13px; }
+    tbody td::before, tfoot td::before { flex-basis: 4.2em; }
   }
 
   /* ---------- print / PDF : 한 장(章) = 한 장(張) ---------- */
@@ -937,7 +996,7 @@
 
   <!-- ══════════════ 02 ══════════════ -->
   <section id="ch2">
-    <div class="shead"><span class="chno">02</span><h2>예산 · 현금</h2><p>항공·숙소·교토 투어는 결제 완료 → 아래는 현지에서 쓸 돈과 USJ 티켓만</p></div>
+    <div class="shead"><span class="chno">02</span><h2>예산 · 현금</h2><p>항공·숙소·교토 투어는 결제 완료 · 아래 표의 메모는 A조와 B조의 값이 갈리는 이유입니다</p></div>
 
     <dl class="btotal">
       <div>
@@ -960,7 +1019,7 @@
     <div class="scroll">
       <table>
         <thead>
-          <tr><th>항목</th><th>A조 1인</th><th>B조 1인</th><th class="wrap-cell">차이가 나는 이유</th></tr>
+          <tr><th>항목</th><th>A조 1인</th><th>B조 1인</th><th class="wrap-cell">메모</th></tr>
         </thead>
         <tbody>
           <tr><td>교통</td><td>¥7,500</td><td>¥8,400</td><td class="wrap-cell dim">공항 왕복 ¥1,940 · 주유패스 ¥3,300 · 나라 왕복 ¥1,360 · 시내. B조는 교토 집합비 대신 <strong>USJ 왕복 ¥1,120</strong></td></tr>
@@ -1025,7 +1084,7 @@
     <div class="scroll" style="margin-bottom: 22px;">
       <table>
         <thead>
-          <tr><th>공항 ↔ 난바</th><th>1인 편도</th><th>원화</th><th>소요</th><th class="wrap-cell">판정</th></tr>
+          <tr><th>수단</th><th>1인 편도</th><th>원화</th><th>소요</th><th class="wrap-cell">판정</th></tr>
         </thead>
         <tbody>
           <tr class="pick">
@@ -1057,7 +1116,7 @@
     <div class="scroll" style="margin-bottom: 22px;">
       <table>
         <thead>
-          <tr><th>패스</th><th>가격</th><th class="wrap-cell">이번 5일 일정 판정</th></tr>
+          <tr><th>패스</th><th>가격</th><th class="wrap-cell">판정</th></tr>
         </thead>
         <tbody>
           <tr class="pick">
@@ -1187,7 +1246,7 @@
     <div class="scroll" style="margin-bottom: 10px;">
       <table>
         <thead>
-          <tr><th>장보기</th><th>영업</th><th>도보</th><th class="wrap-cell">이런 걸 삽니다</th></tr>
+          <tr><th>장보기</th><th>영업</th><th>도보</th><th class="wrap-cell">품목</th></tr>
         </thead>
         <tbody>
           <tr class="pick">
@@ -1662,7 +1721,7 @@
     <div class="scroll" style="margin-bottom: 18px;">
       <table>
         <thead>
-          <tr><th>티켓</th><th>2인 예상</th><th>원화</th><th class="wrap-cell">사야 하나</th></tr>
+          <tr><th>티켓</th><th>2인 예상</th><th>원화</th><th class="wrap-cell">판정</th></tr>
         </thead>
         <tbody>
           <tr class="pick">
@@ -2377,6 +2436,22 @@
     if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
     try { window.scrollTo({ top: 0, behavior: softScroll ? 'smooth' : 'auto' }); }
     catch (e) { window.scrollTo(0, 0); }
+  });
+
+  /* ---------- 0-2. 표를 좁은 화면에서 카드로 펼치기 위한 칸 이름표 ----------
+     머리글(thead)의 칸 이름을 각 칸에 붙여 두면,
+     CSS가 좁은 화면에서 그 이름을 왼쪽에 표시한다.                        */
+  Array.prototype.forEach.call(document.querySelectorAll('table'), function (tbl) {
+    var heads = Array.prototype.map.call(tbl.querySelectorAll('thead th'), function (th) {
+      return th.textContent.trim();
+    });
+    if (!heads.length) return;
+    Array.prototype.forEach.call(tbl.querySelectorAll('tbody tr, tfoot tr'), function (tr) {
+      if (tr.classList.contains('grp')) return;
+      Array.prototype.forEach.call(tr.children, function (td, i) {
+        if (heads[i] && !td.hasAttribute('data-label')) td.setAttribute('data-label', heads[i]);
+      });
+    });
   });
 
   /* ---------- 1. 구글맵 길찾기 ---------- */
