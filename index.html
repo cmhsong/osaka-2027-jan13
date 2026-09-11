@@ -511,6 +511,10 @@
   .d4 { --day: var(--amber); }
   .d5 { --day: var(--slate); }
 
+  /* 확정 아닌 대안 — 테두리를 점선으로 */
+  .day.alt { border-left-style: dashed; }
+  .day.alt .dnum b { font-size: 22px; }
+
   .badge {
     display: inline-block; font-family: "IBM Plex Mono", monospace;
     font-size: 10px; letter-spacing: .13em; text-transform: uppercase;
@@ -684,16 +688,69 @@
     display: flex; flex-direction: column; gap: 6px;
   }
 
+  /* ══════════ 휴대폰 ══════════
+     들고 다니며 보는 문서다. 가로 스크롤을 없애고,
+     표는 줄을 접어 세로로 읽게 하고, 누를 것은 손가락 크기로 키운다 */
   @media (max-width: 620px) {
-    .bar-in { padding: 8px 16px; }
+    .wrap { padding: 26px 16px 88px; gap: 34px; }
+
+    /* 툴바가 화면을 먹지 않게 */
+    .bar-in { padding: 8px 16px; gap: 8px; }
+    .bar-id { font-size: 12px; }
+    .bar-id em { display: none; }
     .find { width: 100%; order: 3; }
-    #q { width: 100%; }
-    .dhead { grid-template-columns: 1fr; }
+    #q { width: 100%; font-size: 16px; padding: 8px 62px 8px 29px; }  /* 16px — iOS 자동 확대 방지 */
+    .sel { font-size: 0; gap: 0; }
+    .sel select { font-size: 12.5px; padding: 7px 8px; }
+    .btn { padding: 7px 11px; }
+
+    /* 표 — 옆으로 밀지 말고 줄을 접는다 */
+    table { min-width: 0; }
+    th, td { white-space: normal; padding: 9px 10px; font-size: 13px; }
+    td.wrap-cell, .wrap-cell { min-width: 0; }
+    tbody td:first-child { min-width: 6.5em; }
+    thead th { font-size: 9.5px; letter-spacing: .08em; }
+
+    /* 표제 · 목차 */
+    h2 { font-size: 21px; }
+    .shead { gap: 10px; }
+    .shead p { flex-basis: 100%; }
+    .mast { padding-bottom: 26px; }
+    .mast .lead { gap: 14px; justify-content: space-between; }
+    .seal { width: 70px; height: 70px; align-self: flex-end; }
+    .seal b { font-size: 17px; }
+    .toc { grid-template-columns: repeat(auto-fit, minmax(142px, 1fr)); }
+    .toc a { padding: 11px; font-size: 12.5px; gap: 7px; }
+    .toc a span { display: none; }
+
+    /* 하루 일정 */
+    .dhead { grid-template-columns: 1fr; padding: 16px 16px 14px; }
     .dnum { grid-row: auto; }
     .dhead .date { text-align: left; }
     .dhead .line { grid-column: 1; }
-    .slot { grid-template-columns: 1fr; padding-left: 20px; }
+    .dpass { grid-column: 1; }
+    .slot { grid-template-columns: 1fr; padding: 12px 16px 12px 20px; }
     .slot .t::before { left: -11px; }
+    .dfoot { padding: 11px 16px; }
+    .btotal { gap: 18px 28px; padding: 16px 18px; }
+    .btotal .big { font-size: 22px; }
+    .fact, .route, .ring, .panel, .team { padding-left: 16px; padding-right: 16px; }
+    .flag.solo { padding: 11px 13px; }
+
+    /* 손가락으로 누를 것들 */
+    a.gm { font-size: 11px; padding: 5px 9px; margin-left: 6px; vertical-align: 1px; }
+    a.gm svg { width: 11px; height: 11px; }
+    .chend { justify-content: stretch; gap: 8px; }
+    .chend a { flex: 1; justify-content: center; padding: 11px 10px; }
+  }
+
+  @media (max-width: 430px) {
+    h1 { font-size: 33px; }
+    .mast .sub { font-size: 15px; }
+    .toc { grid-template-columns: 1fr 1fr; }
+    th, td { padding: 8px; font-size: 12.5px; }
+    .rate { font-size: 11.5px; padding: 6px 11px; }
+    .slot h4 { font-size: 15px; }
   }
 
   /* ---------- print / PDF : 한 장(章) = 한 장(張) ---------- */
@@ -811,7 +868,7 @@
       <a href="#ch6"><i>06</i> Day 3 · A조 교토 <span>1/15</span></a>
       <a href="#ch7"><i>07</i> Day 3 · B조 USJ <span>1/15</span></a>
       <a href="#ch8"><i>08</i> Day 4 · 나라 <span>1/16</span></a>
-      <a href="#ch9"><i>09</i> Day 5 · 대안 <span>1/17</span></a>
+      <a href="#ch9"><i>09</i> Day 5 · 고베 보충안 <span>1/17</span></a>
       <a href="#ch10"><i>10</i> 메모 · 체크리스트 <span></span></a>
     </nav>
   </header>
@@ -1683,7 +1740,7 @@
           <div class="dnum">Day<b>4</b></div>
           <h3>나라 사슴 &amp; 신세카이 쿠시카츠</h3>
           <div class="date">01.16 SAT</div>
-          <p class="line">숙소 최대 장점을 쓰는 날. 킨테츠 닛폰바시역에서 나라까지 <span class="kw">환승 없이 직통</span>입니다.</p>
+          <p class="line">숙소 최대 장점을 쓰는 날. 킨테츠 닛폰바시역에서 나라까지 <span class="kw">환승 없이 직통</span>입니다. 저녁을 <strong>고베 야경</strong>으로 바꾸고 싶다면 <a href="#ch9" style="color: var(--indigo); font-weight: 600;">09장의 보충안 K1·K2</a>를 보세요.</p>
           <div class="dpass"><span class="tag">오늘</span> 킨테츠 왕복 ¥1,360 · 신세카이 ICOCA ¥190 · 주유패스는 나라에서 안 먹힘
             <a class="gm" data-dest="通天閣" data-via="東大寺|中谷堂" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=奈良公園" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>오늘 동선</a>
           </div>
@@ -1755,7 +1812,7 @@
 
   <!-- ══════════════ 09 ══════════════ -->
   <section id="ch9">
-    <div class="shead"><span class="chno">09</span><h2>Day 5 · 대안</h2><p>1/17 일 귀국 — 그리고 4일차를 바꾸고 싶을 때</p></div>
+    <div class="shead"><span class="chno">09</span><h2>Day 5 · 대안</h2><p>1/17 일 귀국 — 그리고 4일차에 고베 야경을 붙이는 두 가지</p></div>
 
     <div class="days" style="margin-bottom: 24px;">
       <article class="day d5">
@@ -1817,7 +1874,237 @@
       </article>
     </div>
 
-    <div class="shead" data-ref style="margin-top: 8px;"><h2 style="font-size: 19px;">4일차를 바꾸고 싶다면</h2><p>나라를 빼고 그 하루를 다르게 쓰는 네 가지</p></div>
+    <div class="shead" style="margin-top: 8px;"><h2 style="font-size: 19px;">Day 4 보충안 — 고베 야경 붙이기</h2><p>1월 고베 일몰 17:10에 맞춰 하루를 마무리하는 두 가지</p></div>
+
+    <div class="flag solo" style="--day: var(--indigo);">
+      <span class="hl">이 숙소라서 가능한 수</span>입니다. 킨테츠 나라선과 한신 난바선이 <strong>오사카난바에서 이어져</strong> 나라에서 고베산노미야까지 <strong>환승 없이</strong> 갑니다. 오사카 시내에서 출발하면 45분, 나라에서 바로 넘어가도 80분이면 항구에 닿습니다. 둘 다 <strong>야경만 보고 오는 반나절 코스</strong>라 4일차 낮을 무엇으로 채울지에 따라 골라 쓰면 됩니다.
+    </div>
+
+    <div class="scroll" style="margin-bottom: 24px;">
+      <table>
+        <thead>
+          <tr><th>보충안</th><th>1인</th><th>원안 대비</th><th>귀가</th><th class="wrap-cell">이런 사람에게</th></tr>
+        </thead>
+        <tbody>
+          <tr class="pick">
+            <td><strong>K1</strong> 오사카 ＋ 고베 야경</td>
+            <td>¥7,600</td><td class="yes">−¥200</td><td>21:00</td>
+            <td class="wrap-cell dim"><span class="yes">체력·시간 모두 여유.</span> 나라를 접는 대신 <strong>쿠시카츠를 점심으로 당겨</strong> 토요일 저녁 대기를 통째로 피하고, 오후를 고베에 씁니다</td>
+          </tr>
+          <tr class="pick">
+            <td><strong>K2</strong> 나라 ＋ 고베 야경</td>
+            <td>¥7,800</td><td>±¥0</td><td>22:00</td>
+            <td class="wrap-cell dim"><span class="yes">사슴도 야경도 포기 못 할 때.</span> 원안과 <strong>비용이 똑같습니다.</strong> 대신 <span class="no">하루 2만 보·귀가 22시</span>라 다음 날 아침이 빠듯합니다</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="days" style="margin-bottom: 26px;">
+
+      <!-- ===== K1 오사카 + 고베 ===== -->
+      <article class="day alt d2">
+        <div class="dhead">
+          <div class="dnum">Plan<b>K1</b></div>
+          <h3>오사카 낮 ＋ 고베항 야경 <span class="badge">보충안</span></h3>
+          <div class="date">01.16 SAT</div>
+          <p class="line">나라를 빼고 오전에 신세카이를 끝낸 뒤, <span class="hl">14시에 고베로 넘어가 해 지는 항구</span>를 봅니다.</p>
+          <div class="dpass"><span class="tag">오늘</span> 지하철 ¥380 · 한신 왕복 ¥840 · 주유패스 불필요
+            <a class="gm" data-dest="メリケンパーク" data-via="通天閣|神戸三宮駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=メリケンパーク" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>오늘 동선</a>
+          </div>
+        </div>
+        <div class="slots">
+          <div class="slot">
+            <div class="t">09:30</div>
+            <div>
+              <h4>쿠로몬 시장 아침
+                <a class="gm" data-dest="黒門市場" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=黒門市場" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>5일차 아침에도 가지만, 이날 여유가 생기니 한 번 더. 도보 3분이라 잃는 시간이 없습니다.</p>
+              <div class="cost">¥800 <b>／ 6,960원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">10:30</div>
+            <div>
+              <h4>신세카이 · 츠텐카쿠 전망대
+                <a class="gm" data-dest="通天閣" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=通天閣" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>사카이스지선 한 정거장. 원안에서는 저녁에 가던 곳을 <span class="kw">오전으로 당겨</span> 줄 없이 올라갑니다.</p>
+              <div class="cost">¥190＋¥1,000 <b>／ 10,353원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">12:00</div>
+            <div>
+              <h4>점심 — 쿠시카츠 다루마 신세카이 본점
+                <a class="gm" data-dest="串カツだるま 新世界総本店" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=串カツだるま 新世界総本店" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p><span class="hl">이 보충안의 진짜 이득</span>입니다. 원안은 토요일 저녁에 여길 가느라 대기가 길었는데, 점심으로 당기면 같은 집을 훨씬 짧은 줄로 먹습니다. <span class="kw">소스 두 번 찍기 금지</span>는 그대로.</p>
+              <div class="cost">¥2,000 <b>／ 17,400원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">14:00</div>
+            <div>
+              <h4>오사카난바 → 고베산노미야 <span class="jp">阪神·直通</span>
+                <a class="gm" data-dest="神戸三宮駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=神戸三宮駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>숙소에서 <span class="jp">오사카난바</span>역까지 도보 8분(또는 킨테츠 한 정거장). 거기서 <strong>한신 쾌속급행 직통</strong>을 타면 갈아타지 않습니다.</p>
+              <div class="cost">¥420 <b>／ 3,654원</b> · 약 45분</div>
+              <div class="flag" data-ref><strong>쿠폰 검토</strong> · 한신의 <span class="jp">고베 마치메구리 1day 쿠폰</span>은 왕복＋시내 이동＋시설 할인이 묶여 <span class="mono">¥1,700</span> 안팎. 포트타워까지 올라갈 계획이면 비슷하거나 유리합니다. 역 창구에서 그날 가격만 확인하세요.</div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">15:00</div>
+            <div>
+              <h4>난킨마치 <span class="jp">南京町</span> 차이나타운
+                <a class="gm" data-dest="南京町" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=南京町 神戸" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>산노미야역에서 도보 10분. <span class="jp">로쇼키(老祥記)</span> 부타망이 개당 ¥110대. <span class="hl">가게들이 18시 전후로 닫으니 야경보다 먼저</span> 들러야 합니다.</p>
+              <div class="cost">¥800 <b>／ 6,960원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">16:30</div>
+            <div>
+              <h4>메리켄파크 <span class="jp">メリケンパーク</span> — 일몰 20분 전 도착
+                <a class="gm" data-dest="メリケンパーク" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=メリケンパーク" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>난킨마치에서 도보 10분. <strong>입장료 없는 야경 명소</strong>입니다. BE KOBE 조형물과 붉은 포트타워가 물에 비칩니다. 하늘색이 바뀌는 20분이 이날의 핵심입니다.</p>
+              <div class="cost">무료</div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">17:15</div>
+            <div>
+              <h4>고베 포트타워 전망대
+                <a class="gm" data-dest="神戸ポートタワー" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=神戸ポートタワー" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>일몰과 점등이 겹치는 시간. 리뉴얼 뒤 옥상 데크가 생겨 <strong>바깥에서 바로</strong> 볼 수 있습니다(층에 따라 요금이 갈립니다). 예산이 빠듯하면 빼고 메리켄파크에서만 봐도 충분합니다.</p>
+              <div class="cost">¥1,000~1,200 <b>／ 8,700~10,440원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">18:30</div>
+            <div>
+              <h4>하버랜드 <span class="jp">モザイク</span> · 저녁
+                <a class="gm" data-dest="神戸ハーバーランド umie モザイク" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=神戸ハーバーランド モザイク" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>포트타워를 <strong>맞은편에서 보는 자리</strong>가 여기입니다. 고베 야경 사진 대부분이 이 데크에서 찍힙니다. 저녁은 umie 푸드코트나 <span class="kw">소바메시·뎃판야키</span> — 고베규는 런치도 ¥3,000부터라 예산 밖입니다.</p>
+              <div class="cost">데크 무료 · 저녁 ¥1,500 <b>／ 13,050원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">20:15</div>
+            <div>
+              <h4>고베산노미야 → 오사카난바 · 21시 숙소</h4>
+              <p>같은 직통으로 돌아옵니다. <strong>밤에 캐리어를 쌀 시간이 남습니다</strong> — 내일이 귀국일입니다.</p>
+              <div class="cost">¥420 <b>／ 3,654원</b></div>
+              <div class="flag"><span class="hl">1월 항구는 정말 춥습니다.</span> 바닷바람 때문에 오사카 시내보다 체감이 3~4℃ 떨어집니다. 장갑·목도리·핫팩을 챙기고, 야경 자리는 <span class="mono">30~40분</span> 이상 버티기 어렵다고 보세요.</div>
+            </div>
+          </div>
+        </div>
+        <div class="dfoot"><span>1인 당일 지출 · 원안 대비 <strong class="yes">¥200 절약</strong></span><span class="amt">¥7,600 ／ 66,120원</span></div>
+      </article>
+
+      <!-- ===== K2 나라 + 고베 ===== -->
+      <article class="day alt d4">
+        <div class="dhead">
+          <div class="dnum">Plan<b>K2</b></div>
+          <h3>나라 사슴 ＋ 고베항 야경 <span class="badge">보충안</span></h3>
+          <div class="date">01.16 SAT</div>
+          <p class="line">원안의 나라를 그대로 두고, 오후에 신세카이 대신 <span class="hl">나라에서 고베로 바로 넘어갑니다.</span> 환승 0회.</p>
+          <div class="dpass"><span class="tag">오늘</span> 킨테츠 ¥680 · 나라→산노미야 ¥1,100 · 산노미야→난바 ¥420
+            <a class="gm" data-dest="メリケンパーク" data-via="東大寺|神戸三宮駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=メリケンパーク" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>오늘 동선</a>
+          </div>
+        </div>
+        <div class="slots">
+          <div class="slot">
+            <div class="t">08:30</div>
+            <div>
+              <h4>킨테츠 닛폰바시 → 킨테츠나라 <span class="jp">(원안보다 10분 일찍)</span>
+                <a class="gm" data-dest="近鉄奈良駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=近鉄奈良駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>고베를 뒤에 붙이는 만큼 <span class="kw">아침을 10분 당겨</span> 출발합니다. 직통 40분.</p>
+              <div class="cost">¥680 <b>／ 5,916원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">09:20</div>
+            <div>
+              <h4>나라공원 사슴 → 도다이지 대불전
+                <a class="gm" data-dest="東大寺" data-from="近鉄奈良駅" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=東大寺" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>원안과 같은 코스입니다. 시카센베 ¥200, 높이 15m 청동 대불 ¥800. <strong>나라마치까지 넣으면 시간이 모자라니</strong> 오늘은 공원·도다이지까지만.</p>
+              <div class="cost">¥1,000 <b>／ 8,700원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">12:00</div>
+            <div>
+              <h4>나라마치 점심 · 나카타니도우 떡메치기
+                <a class="gm" data-dest="中谷堂" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=中谷堂" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>갓 만든 쑥떡 ¥150. <span class="hl">13:40에는 역으로 돌아와야</span> 고베 일정이 밀리지 않습니다.</p>
+              <div class="cost">¥1,200 <b>／ 10,440원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">14:00</div>
+            <div>
+              <h4>킨테츠나라 → 고베산노미야 <span class="jp">阪神なんば線 直通快速急行</span>
+                <a class="gm" data-dest="神戸三宮駅" data-from="近鉄奈良駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=神戸三宮駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>킨테츠 나라선과 한신 난바선이 오사카난바에서 이어져 <span class="hl">나라에서 고베까지 갈아타지 않습니다.</span> 약 80분, 앉아서 한숨 자면 도착합니다.</p>
+              <div class="cost">¥1,100 <b>／ 9,570원</b> · 약 80분</div>
+              <div class="flag"><strong>직통은 시간당 몇 편뿐입니다.</strong> 아침에 킨테츠나라역에 도착하자마자 <span class="kw">고베산노미야행 쾌속급행 시각표를 찍어두세요.</span> 놓치면 오사카난바에서 한 번 갈아타면 되니 큰일은 아닙니다.</div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">15:30</div>
+            <div>
+              <h4>난킨마치 <span class="jp">南京町</span> — 늦은 간식
+                <a class="gm" data-dest="南京町" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=南京町 神戸" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>부타망 몇 개로 요기만. <span class="hl">18시 전후로 닫으니 지금 들러야</span> 합니다.</p>
+              <div class="cost">¥800 <b>／ 6,960원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">16:40</div>
+            <div>
+              <h4>메리켄파크 → 포트타워 → 하버랜드
+                <a class="gm" data-dest="メリケンパーク" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=メリケンパーク" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+              </h4>
+              <p>K1과 같은 순서입니다. 무료 데크에서 일몰(17:10) → 포트타워 전망대 → 맞은편 모자이크 데크에서 야경. <strong>세 곳이 도보 10분 안에</strong> 붙어 있어 나라에서 늦게 와도 다 볼 수 있습니다.</p>
+              <div class="cost">¥1,100 <b>／ 9,570원</b> · 전망대</div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">19:00</div>
+            <div>
+              <h4>저녁 — umie 푸드코트 또는 소바메시</h4>
+              <p>종일 걸었으니 자리 넉넉한 곳에서 끝냅니다. 고베규는 예산 밖.</p>
+              <div class="cost">¥1,500 <b>／ 13,050원</b></div>
+            </div>
+          </div>
+          <div class="slot">
+            <div class="t">20:30</div>
+            <div>
+              <h4>고베산노미야 → 오사카난바 · 22시 숙소</h4>
+              <p>돌아올 때도 직통. <span class="hl">내일이 귀국일이니 캐리어는 3일차 밤에 미리 싸두세요.</span> 이 보충안의 유일한 부담이 여기입니다.</p>
+              <div class="cost">¥420 <b>／ 3,654원</b></div>
+              <div class="flag"><strong>하루 2만 보를 넘깁니다.</strong> 나라공원·도다이지에서 이미 많이 걷고 항구에서 또 걷습니다. 4명 중 한 명이라도 무릎이 안 좋으면 K1을 고르세요.</div>
+            </div>
+          </div>
+        </div>
+        <div class="dfoot"><span>1인 당일 지출 · 원안과 <strong>동일</strong></span><span class="amt">¥7,800 ／ 67,860원</span></div>
+      </article>
+
+    </div>
+
+    <div class="shead" data-ref style="margin-top: 8px;"><h2 style="font-size: 19px;">그 밖의 대안</h2><p>고베를 안 갈 때, 4일차를 다르게 쓰는 네 가지</p></div>
     <div class="scroll" data-ref>
       <table>
         <thead>
