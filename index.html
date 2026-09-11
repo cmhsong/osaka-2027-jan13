@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="2027년 1월 13~17일, 성인 4명 오사카 4박 5일 여행 일정표 10장. 3일차 교토 투어 2인·유니버설 스튜디오 2인 분리 운영, 검색과 구글맵 길찾기, 패스권 판정과 예산 배분.">
+<meta name="description" content="2027년 1월 13~17일, 성인 4명 오사카 4박 5일 여행 일정표 10장. 3일차 교토 투어 2인·유니버설 스튜디오 2인 분리 운영, 구글맵 길찾기와 숙소 좌표 고정, 패스권 판정과 예산 배분.">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="theme-color" content="#eceeef" media="(prefers-color-scheme: light)">
@@ -148,34 +148,19 @@
     .btn { transition: border-color .12s ease, color .12s ease, background-color .12s ease; }
   }
 
-  /* ---------- search ---------- */
-  .find { position: relative; display: flex; align-items: center; }
-  .find svg.ic {
-    position: absolute; left: 9px; width: 13px; height: 13px;
-    fill: none; stroke: var(--ink-3); stroke-width: 1.7; pointer-events: none;
+  /* 툴바의 두 이동 버튼 — 목차는 藍, 숙소로는 朱 */
+  .btn-toc {
+    text-decoration: none;
+    background: var(--indigo); border-color: var(--indigo); color: #f6f3ea;
+    font-weight: 600; letter-spacing: .03em;
   }
-  #q {
-    font-family: "IBM Plex Sans KR", system-ui, sans-serif;
-    font-size: 12.5px; color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--line); border-radius: 2px;
-    padding: 6px 62px 6px 27px;
-    width: 232px; line-height: 1.4;
+  .btn-toc:hover { background: var(--ink); border-color: var(--ink); color: #f6f3ea; }
+  .btn-back {
+    text-decoration: none;
+    background: var(--surface); border-color: var(--vermilion); color: var(--vermilion);
+    font-weight: 600;
   }
-  #q::placeholder { color: var(--ink-3); }
-  #q:focus { outline: none; border-color: var(--accent); }
-  .find .hits {
-    position: absolute; right: 26px;
-    font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
-    font-size: 11px; color: var(--ink-3); pointer-events: none;
-  }
-  .find .clr {
-    position: absolute; right: 5px;
-    border: 0; background: none; color: var(--ink-3);
-    font-size: 15px; line-height: 1; cursor: pointer; padding: 3px 5px;
-  }
-  .find .clr:hover { color: var(--ink); }
-  .find .clr[hidden] { display: none; }
+  .btn-back:hover { background: var(--vermilion); border-color: var(--vermilion); color: #fdf8ee; }
 
   .sel {
     display: inline-flex; align-items: center; gap: 6px;
@@ -190,16 +175,6 @@
     padding: 5px 8px; cursor: pointer; text-transform: none; letter-spacing: 0;
   }
   .sel select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-  mark { background: var(--mark-bg); color: var(--mark-ink); border-radius: 2px; padding: 0 1px; }
-  .nomatch { display: none !important; }
-  .empty {
-    display: none;
-    margin-top: 26px; padding: 26px 22px; text-align: center;
-    border: 1px dashed var(--line); border-radius: 3px; color: var(--ink-3); font-size: 13.5px;
-  }
-  :root.searching .empty.on { display: block; }
-  :root.searching .toc { display: none; }
 
   /* ---------- reference toggle ---------- */
   :root.hide-ref [data-ref] { display: none !important; }
@@ -318,7 +293,8 @@
   }
   .rate span { color: var(--ink-3); letter-spacing: .1em; font-size: 10.5px; text-transform: uppercase; }
 
-  /* ---------- 목차 — 품책(品冊)처럼 藍으로 묶는다 ---------- */
+  /* ---------- 목차 — 맨 앞에서 품책(品冊)처럼 藍으로 묶는다 ---------- */
+  .tocwrap { display: flex; flex-direction: column; }
   .toc {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1px;
@@ -652,6 +628,7 @@
     opacity: 0; visibility: hidden; transform: translateY(8px);
   }
   .home.on { opacity: 1; visibility: visible; transform: rotate(-2deg); }
+  .home:active { transform: rotate(-2deg) scale(.96); }
   .home:hover { background: var(--ink); border-color: var(--ink); }
   .home:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
   .home svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; }
@@ -698,9 +675,8 @@
     .bar-in { padding: 8px 16px; gap: 8px; }
     .bar-id { font-size: 12px; }
     .bar-id em { display: none; }
-    .find { width: 100%; order: 3; }
-    #q { width: 100%; font-size: 16px; padding: 8px 62px 8px 29px; }  /* 16px — iOS 자동 확대 방지 */
     .sel { font-size: 0; gap: 0; }
+    .btn-toc, .btn-back { font-size: 12px; padding: 8px 12px; }
     .sel select { font-size: 12.5px; padding: 7px 8px; }
     .btn { padding: 7px 11px; }
 
@@ -777,7 +753,7 @@
     }
 
     body { font-size: 9.4pt; line-height: 1.5; background: #fff; }
-    .bar, .toc, .toc-cap, .empty, a.gm, .home, .chend { display: none !important; }
+    .bar, .toc, .tocwrap, .toc-cap, a.gm, .home, .chend { display: none !important; }
     .wrap { max-width: none; padding: 0; gap: 0; }
     body { background-image: none; }
     .mast::after { display: none; }
@@ -819,13 +795,17 @@
 <div class="bar">
   <div class="bar-in">
     <div class="bar-id">大阪 <em>2027.01.13—17 · 4인 · 10장</em></div>
-    <div class="find">
-      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/></svg>
-      <input id="q" type="search" placeholder="검색 — 장소·금액·노선·메모" autocomplete="off" spellcheck="false" aria-label="일정표 검색">
-      <span class="hits" id="hits"></span>
-      <button type="button" class="clr" id="qclr" hidden aria-label="검색어 지우기">×</button>
-    </div>
     <div class="bar-actions">
+      <a href="#top" class="btn btn-toc" title="맨 위 목차로">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        목차
+      </a>
+      <a class="btn btn-back gm" id="backbtn" data-origin="here" data-dest="34.667911,135.508590" data-mode="walking"
+         href="https://www.google.com/maps/dir/?api=1&destination=34.667911,135.508590&travelmode=walking"
+         target="_blank" rel="noopener" title="지금 있는 자리에서 숙소까지 구글맵 길찾기">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+        숙소로
+      </a>
       <label class="sel" title="문서 안의 모든 길찾기 버튼이 이 기준으로 열립니다">길찾기
         <select id="gmmode">
           <option value="hotel">숙소에서 출발</option>
@@ -848,18 +828,9 @@
 
 <div class="wrap">
 
-  <header class="mast" id="top">
-    <div class="lead">
-      <div>
-        <div class="eyebrow">2027.01.13 wed — 01.17 sun · 성인 4명 · 4박 5일 · 10장</div>
-        <h1>오사카 4박 5일</h1>
-        <p class="sub">닛폰바시 <span class="mono">1-11-6</span>에 베이스를 두고 오사카 시내·교토·나라를 도는 먹방＋명소 일정. <strong>3일차 하루만 2인＋2인으로 나뉘어</strong> 한 팀은 교토 원데이 투어, 한 팀은 유니버설 스튜디오 재팬으로 갑니다. 나머지 나흘은 4명이 함께 움직입니다.</p>
-        <div class="rate"><span>고정 환율</span> ¥100 = 870원</div>
-      </div>
-      <div class="seal" aria-hidden="true"><b>大阪</b><i>四泊五日</i></div>
-    </div>
-    <div class="toc-cap">目次 · 목차 <em>전체 10장</em></div>
-    <nav class="toc">
+  <nav class="tocwrap" id="top">
+    <div class="toc-cap">目次 · 목차 <em>전체 10장 — 눌러서 바로 이동</em></div>
+    <div class="toc">
       <a href="#ch1"><i>01</i> 개요 · 조 편성 <span></span></a>
       <a href="#ch2"><i>02</i> 예산 · 현금 <span></span></a>
       <a href="#ch3"><i>03</i> 교통 · 패스 <span></span></a>
@@ -870,7 +841,19 @@
       <a href="#ch8"><i>08</i> Day 4 · 나라 <span>1/16</span></a>
       <a href="#ch9"><i>09</i> Day 5 · 고베 보충안 <span>1/17</span></a>
       <a href="#ch10"><i>10</i> 메모 · 체크리스트 <span></span></a>
-    </nav>
+    </div>
+  </nav>
+
+  <header class="mast">
+    <div class="lead">
+      <div>
+        <div class="eyebrow">2027.01.13 wed — 01.17 sun · 성인 4명 · 4박 5일 · 10장</div>
+        <h1>오사카 4박 5일</h1>
+        <p class="sub">닛폰바시 <span class="mono">1-11-6</span>에 베이스를 두고 오사카 시내·교토·나라를 도는 먹방＋명소 일정. <strong>3일차 하루만 2인＋2인으로 나뉘어</strong> 한 팀은 교토 원데이 투어, 한 팀은 유니버설 스튜디오 재팬으로 갑니다. 나머지 나흘은 4명이 함께 움직입니다.</p>
+        <div class="rate"><span>고정 환율</span> ¥100 = 870원</div>
+      </div>
+      <div class="seal" aria-hidden="true"><b>大阪</b><i>四泊五日</i></div>
+    </div>
   </header>
 
   <!-- ══════════════ 01 ══════════════ -->
@@ -1266,6 +1249,25 @@
             <td>¥500~800</td><td>4,350~</td><td>4분</td>
             <td class="wrap-cell dim">1월은 <strong>딸기 시즌</strong>. 생과일주스·딸기 꼬치로 입가심</td>
           </tr>
+          <tr class="pick">
+            <td>쿠로몬 산페이 <span class="jp">黒門三平</span>
+              <a class="gm" data-dest="黒門三平" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=黒門三平" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+            </td>
+            <td>¥500~2,000</td><td>4,350~</td><td>3분</td>
+            <td class="wrap-cell dim"><span class="yes">쿠로몬에서 제일 큰 해산물 가게.</span> 회·초밥·구운 가리비·성게를 <strong>골라서 서서 먹습니다.</strong> 2층에 앉는 자리도 있어 4명이 붙어 먹기 좋습니다</td>
+          </tr>
+          <tr data-ref>
+            <td>하마토 <span class="jp">黒門 浜藤</span></td>
+            <td>런치 ¥3,000~</td><td>26,100~</td><td>4분</td>
+            <td class="wrap-cell dim">1918년 창업 <strong>복요리(ふぐ) 노포</strong>. <span class="hl">1월이 제철</span>이라 마지막 날 한 끼를 사치하고 싶다면 여기. 예산을 넘기니 4명 합의가 필요합니다</td>
+          </tr>
+          <tr>
+            <td>마루후쿠 커피 <span class="jp">丸福珈琲店</span> 센니치마에 본점
+              <a class="gm" data-dest="丸福珈琲店 千日前本店" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=丸福珈琲店 千日前本店" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+            </td>
+            <td>¥600~1,000</td><td>5,220~</td><td>4분</td>
+            <td class="wrap-cell dim"><span class="yes">1934년부터 그 자리.</span> 진하게 내린 커피와 두툼한 핫케이크. <strong>아침 8시에 엽니다</strong> — 추운 1월 아침 첫 일정으로 딱</td>
+          </tr>
 
           <tr class="grp"><td colspan="5">오사카 필수 3종</td></tr>
           <tr class="pick">
@@ -1282,10 +1284,22 @@
             <td>¥500~700</td><td>4,350~</td><td>5분</td>
             <td class="wrap-cell dim">타코야키 8개 500엔대. 센니치마에 본점이 가깝습니다</td>
           </tr>
+          <tr>
+            <td>쥬하치방 <span class="jp">たこ焼き十八番</span> 도톤보리
+              <a class="gm" data-dest="たこ焼き十八番 道頓堀店" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=たこ焼き十八番 道頓堀" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+            </td>
+            <td>¥500~700</td><td>4,350~</td><td>8분</td>
+            <td class="wrap-cell dim">반죽에 <strong>튀김가루를 섞어</strong> 겉이 유난히 바삭합니다. 와나카와 <span class="kw">한 번씩 먹어보고 취향을 고르는 재미</span>가 있습니다</td>
+          </tr>
           <tr data-ref>
             <td>미즈노 <span class="jp">美津の</span></td>
             <td>¥1,500~2,200</td><td>13,050~</td><td>8분</td>
             <td class="wrap-cell dim">도톤보리 오코노미야키 노포. 마 반죽 야마이모야키가 간판. 줄이 아지노야보다 깁니다</td>
+          </tr>
+          <tr data-ref>
+            <td>치보 <span class="jp">千房</span> 도톤보리</td>
+            <td>¥1,200~1,800</td><td>10,440~</td><td>8분</td>
+            <td class="wrap-cell dim">체인이지만 오사카가 본산. <span class="yes">자리가 많아 대기가 짧습니다</span> — 아지노야·미즈노 줄에 지쳤을 때의 현실적인 답</td>
           </tr>
 
           <tr class="grp"><td colspan="5">든든한 한 끼 · 가성비</td></tr>
@@ -1316,6 +1330,35 @@
             <td>¥1,000~1,300</td><td>8,700~</td><td>8분</td>
             <td class="wrap-cell dim"><span class="h24">24시간</span> · 1인석이라 일행과 떨어져 앉습니다. 한국어 주문표 있음</td>
           </tr>
+          <tr class="pick">
+            <td>치토세 <span class="jp">千とせ べつかん</span>
+              <a class="gm" data-dest="千とせ べつかん 難波" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=千とせ べつかん 難波" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+            </td>
+            <td>¥800~1,000</td><td>6,960~</td><td>6분</td>
+            <td class="wrap-cell dim"><span class="yes">현지인 음식.</span> 우동 국물에 소고기와 파를 얹은 <strong>니쿠스이(肉吸い)</strong> — 면 대신 밥을 말아 먹습니다. 난바 그랜드 카게츠 옆이라 만자이 극장 구경과 묶기 좋습니다</td>
+          </tr>
+          <tr>
+            <td>잇포테이 <span class="jp">一芳亭</span> 본점</td>
+            <td>¥400~1,000</td><td>3,480~</td><td>8분</td>
+            <td class="wrap-cell dim">1933년 창업. 김 대신 <strong>얇은 달걀지단으로 싼 슈마이</strong>가 명물. 한 접시 ¥400대라 여럿이 이것저것 시키기 좋습니다</td>
+          </tr>
+          <tr>
+            <td>다이키수산 회전초밥 <span class="jp">大起水産</span> 도톤보리
+              <a class="gm" data-dest="大起水産 回転寿司 道頓堀店" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=大起水産 回転寿司 道頓堀" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+            </td>
+            <td>¥1,500~2,500</td><td>13,050~</td><td>8분</td>
+            <td class="wrap-cell dim">수산회사가 직접 하는 회전초밥. <span class="yes">쿠로몬 회값이 부담되면 여기가 답</span>입니다. 접시당 ¥150~500</td>
+          </tr>
+          <tr data-ref>
+            <td>홋쿄쿠세이 <span class="jp">北極星</span> 신사이바시 본점</td>
+            <td>¥1,000~1,500</td><td>8,700~</td><td>12분</td>
+            <td class="wrap-cell dim"><strong>오므라이스를 처음 만든 집</strong>(1922년). 다다미방이 있는 일본식 가옥이라 밥보다 공간이 기억에 남습니다. 도보 12분이라 조금 멉니다</td>
+          </tr>
+          <tr data-ref>
+            <td>하리쥬 <span class="jp">はり重</span> 도톤보리</td>
+            <td>런치 ¥1,600~</td><td>13,920~</td><td>8분</td>
+            <td class="wrap-cell dim">정육점이 하는 양식집. 저녁 스키야키는 ¥8,000 이상이라 예산 밖이지만 <strong>런치 비프카레·커틀릿</strong>이면 감당됩니다</td>
+          </tr>
 
           <tr class="grp"><td colspan="5">숙소로 가져가기 · 디저트 · 심야</td></tr>
           <tr class="pick">
@@ -1338,14 +1381,65 @@
             <td class="wrap-cell dim">호젠지요코초. 단팥죽을 <strong>일부러 두 그릇에 나눠</strong> 내주는 100년 넘은 집</td>
           </tr>
           <tr>
+            <td>준킷사 아메리칸 <span class="jp">純喫茶アメリカン</span>
+              <a class="gm" data-dest="純喫茶アメリカン 道頓堀" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=純喫茶アメリカン 道頓堀" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+            </td>
+            <td>¥700~1,200</td><td>6,090~</td><td>7분</td>
+            <td class="wrap-cell dim">1946년부터 그대로인 <strong>쇼와 킷사텐</strong>. 샹들리에와 붉은 소파, 두툼한 핫케이크. 비 오거나 추운 날 <span class="kw">한 시간 쉬어 가는 자리</span>로 잡아두세요</td>
+          </tr>
+          <tr>
             <td>마츠야 · 스키야 규동</td>
             <td>¥500~700</td><td>4,350~</td><td>3~5분</td>
             <td class="wrap-cell dim"><span class="h24">24시간</span> · 티켓 자판기라 말이 필요 없음. 예산이 빠듯할 때의 안전망</td>
           </tr>
+          <tr data-ref>
+            <td>도구야스지 <span class="jp">千日前道具屋筋</span></td>
+            <td>구경 무료</td><td>—</td><td>5분</td>
+            <td class="wrap-cell dim">먹는 곳은 아니지만 <strong>식품 샘플·타코야키 팬·칼</strong>을 파는 주방 상점가. 밥 먹고 소화시키며 걷기 좋고 기념품이 여기서 나옵니다</td>
+          </tr>
         </tbody>
       </table>
     </div>
-    <p class="dim" style="margin: 10px 2px 0;">가게 이름은 고정이지만 <strong>영업시간·정기휴일은 2027년 1월 기준으로 바뀔 수 있습니다.</strong> 대기가 긴 아지노야·리쿠로는 출발 전 구글맵에 저장해 두고 당일 아침에 영업 여부만 확인하세요.</p>
+    <p class="dim" style="margin: 10px 2px 22px;">가게 이름은 고정이지만 <strong>영업시간·정기휴일은 2027년 1월 기준으로 바뀔 수 있습니다.</strong> 대기가 긴 아지노야·리쿠로는 출발 전 구글맵에 저장해 두고 당일 아침에 영업 여부만 확인하세요.</p>
+
+    <div class="rings">
+      <div class="ring">
+        <div class="rt">쿠로몬 — 해산물</div>
+        <ul>
+          <li><b>참치회 한 팩</b> <span>¥500~1,200 · 중뱃살은 ¥1,500부터</span></li>
+          <li><b>구운 가리비</b> <span>¥500~700 · 한 개씩 그 자리에서</span></li>
+          <li><b>성게 <span class="jp">うに</span></b> <span>¥1,000~ · 작은 판 하나</span></li>
+          <li><b>굴 <span class="jp">牡蠣</span></b> <span>¥300~500/개 · 1월이 제철</span></li>
+        </ul>
+      </div>
+      <div class="ring">
+        <div class="rt">쿠로몬 — 고기·꼬치</div>
+        <ul>
+          <li><b>고베규 꼬치</b> <span>¥800~1,500 · 값 차이가 가장 큽니다</span></li>
+          <li><b>와규 스시 2관</b> <span>¥1,000 내외</span></li>
+          <li><b>닭꼬치·가라아게</b> <span>¥200~400</span></li>
+        </ul>
+      </div>
+      <div class="ring">
+        <div class="rt">쿠로몬 — 간식</div>
+        <ul>
+          <li><b>두유 도넛</b> <span>¥100/개 · 이시바시 식품</span></li>
+          <li><b>딸기</b> <span>¥500~800/팩 · 1월이 한창</span></li>
+          <li><b>생과일주스</b> <span>¥400~600</span></li>
+          <li><b>어묵 <span class="jp">おでん</span></b> <span>¥150~/개 · 추운 아침에</span></li>
+        </ul>
+      </div>
+      <div class="ring">
+        <div class="rt">먹는 요령</div>
+        <ul>
+          <li><b>1인 ¥1,500이면 배부릅니다</b> <span>세 종류쯤 골라 나눠 먹는 구성</span></li>
+          <li><b>현금을 챙기세요</b> <span>노점 상당수가 카드를 안 받습니다</span></li>
+          <li><b>오전이 답</b> <span>9~11시가 한산하고, 오후엔 좋은 것이 빠집니다</span></li>
+          <li><b>걸어 다니며 먹지 않기</b> <span>가게 앞 자리에서 먹고 쓰레기는 그 가게에</span></li>
+        </ul>
+      </div>
+    </div>
+    <p class="dim" style="margin: 10px 2px 0;">위 시세는 <span class="mono">2025년 기준</span>이고 가게마다 다릅니다. <strong>값을 안 붙여 놓은 것은 반드시 먼저 물어보세요</strong> — 쿠로몬은 관광객 상대로 값을 세게 부르는 가게가 섞여 있습니다.</p>
   </section>
 
   <!-- ══════════════ 05 ══════════════ -->
@@ -2167,8 +2261,9 @@
         <h3>이 문서 쓰는 법</h3>
         <ul>
           <li><span class="hl">붉은 굵은 글씨</span>는 <strong>놓치면 일정이 깨지는 것</strong>(마감 시각, 사전 구매, 꼭 확인할 것)이고, <span class="num">파란 숫자</span>는 그날·1인 기준으로 나가는 돈입니다.</li>
-          <li>상단 <strong>검색창</strong>에 장소·금액·노선을 치면 해당 항목만 남습니다. <span class="mono">/</span> 키로 바로 검색, <span class="mono">Esc</span>로 해제.</li>
-          <li>모든 <strong>길찾기</strong> 버튼은 구글맵으로 열립니다. 기본 출발지는 숙소(<span class="mono">日本橋1-11-6</span>)이고, 툴바에서 <span class="kw">현재 위치 기준</span>으로 바꿀 수 있습니다.</li>
+          <li><strong>목차는 맨 위</strong>에 있고, 툴바의 <strong>목차</strong> 버튼과 오른쪽 아래 <strong>홈</strong> 버튼으로 언제든 돌아옵니다.</li>
+          <li>툴바의 <strong>숙소로</strong> 버튼은 <span class="hl">지금 있는 자리에서 숙소까지</span> 걸어가는 길을 구글맵으로 엽니다. 길을 잃었을 때 이것만 누르면 됩니다.</li>
+          <li>모든 <strong>길찾기</strong> 버튼은 구글맵으로 열립니다. 기본 출발지는 숙소(<span class="mono">日本橋1-11-6</span> 좌표 고정)이고, 툴바에서 <span class="kw">현재 위치 기준</span>으로 바꿀 수 있습니다.</li>
           <li><strong>참고 자료 접기</strong>를 누르면 불채택 패스·대안처럼 당일에 볼 필요 없는 줄이 사라집니다.</li>
           <li>장이 끝날 때마다 <strong>「NN장 처음으로」·「목차」</strong> 버튼이 있고, 오른쪽 아래 <strong>홈</strong> 버튼은 어디서든 맨 위 목차로 돌아갑니다.</li>
           <li><strong>인쇄 · PDF</strong>는 장마다 새 페이지로 나옵니다 — 10장짜리 종이 일정표가 됩니다.</li>
@@ -2219,8 +2314,6 @@
       </div>
     </div>
   </section>
-
-  <div class="empty" id="empty">검색 결과가 없습니다. 다른 낱말로 찾아보세요 — 예: <span class="mono">쿠로몬</span>, <span class="mono">주유패스</span>, <span class="mono">USJ</span>, <span class="mono">¥970</span></div>
 
   <footer>
     <div>요금은 2025년 공시가 기준입니다. <strong>주유패스·입장료·교통비·USJ 티켓은 2027년 1월까지 인상될 수 있으니</strong> 출발 2주 전 한 번 재확인하고, 차이는 예비비와 쇼핑 예산에서 흡수하면 됩니다.</div>
@@ -2277,11 +2370,8 @@
     if (history.replaceState) history.replaceState(null, '', '#' + id);
   });
 
-  function toggleHome() {
-    homebtn.classList.toggle('on', (window.pageYOffset || document.documentElement.scrollTop) > 420);
-  }
-  toggleHome();
-  window.addEventListener('scroll', toggleHome, { passive: true });
+  // 홈 버튼은 처음부터 늘 보이게 둔다
+  homebtn.classList.add('on');
 
   homebtn.addEventListener('click', function () {
     if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
@@ -2310,7 +2400,9 @@
       if (a.hasAttribute('data-place') || (mode === 'place' && !via)) {
         url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(dest);
       } else {
-        var origin = fixed ? fixed : (mode === 'here' ? '' : HOTEL);
+        // data-origin="here" — '숙소로' 버튼처럼 항상 현재 위치에서 출발
+        var forced = a.getAttribute('data-origin');
+        var origin = forced === 'here' ? '' : (fixed ? fixed : (mode === 'here' ? '' : HOTEL));
         url = 'https://www.google.com/maps/dir/?api=1';
         if (origin) url += '&origin=' + encodeURIComponent(origin);
         url += '&destination=' + encodeURIComponent(dest);
@@ -2358,134 +2450,6 @@
 
   document.getElementById('printbtn').addEventListener('click', function () { window.print(); });
 
-  /* ---------- 3. 검색 ---------- */
-  var UNIT_LIST = ['.fact', '.team', '.route', '.ring', '.panel li', '.slot', '.scroll tbody tr', '.btotal > div', '.toc a', '.flag.solo'];
-  var UNIT_SEL = UNIT_LIST.join(', ');
-  var ALIVE_SEL = UNIT_LIST.map(function (s) { return s + ':not(.nomatch)'; }).join(', ');
-  var units = Array.prototype.slice.call(document.querySelectorAll(UNIT_SEL));
-  var groups = Array.prototype.slice.call(document.querySelectorAll('tr.grp'));
-  var sections = Array.prototype.slice.call(document.querySelectorAll('.wrap > section'));
-  var input = document.getElementById('q');
-  var hits = document.getElementById('hits');
-  var clr = document.getElementById('qclr');
-  var empty = document.getElementById('empty');
-  var saved = [];
-  var timer = null;
-
-  function restore() {
-    for (var i = 0; i < saved.length; i++) saved[i][0].innerHTML = saved[i][1];
-    saved = [];
-  }
-
-  function highlight(el, q) {
-    saved.push([el, el.innerHTML]);
-    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
-    var nodes = [], n;
-    while ((n = walker.nextNode())) nodes.push(n);
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      var text = node.nodeValue;
-      var low = text.toLowerCase();
-      var at = low.indexOf(q);
-      if (at < 0) continue;
-      var frag = document.createDocumentFragment();
-      var pos = 0;
-      while (at >= 0) {
-        if (at > pos) frag.appendChild(document.createTextNode(text.slice(pos, at)));
-        var m = document.createElement('mark');
-        m.textContent = text.slice(at, at + q.length);
-        frag.appendChild(m);
-        pos = at + q.length;
-        at = low.indexOf(q, pos);
-      }
-      if (pos < text.length) frag.appendChild(document.createTextNode(text.slice(pos)));
-      if (node.parentNode) node.parentNode.replaceChild(frag, node);
-    }
-  }
-
-  function clearAll() {
-    restore();
-    for (var i = 0; i < units.length; i++) units[i].classList.remove('nomatch');
-    for (var g = 0; g < groups.length; g++) groups[g].classList.remove('nomatch');
-    for (var s = 0; s < sections.length; s++) sections[s].classList.remove('nomatch');
-    root.classList.remove('searching');
-    empty.classList.remove('on');
-    hits.textContent = '';
-    clr.hidden = true;
-  }
-
-  function run(raw) {
-    var q = raw.trim().toLowerCase();
-    restore();
-    if (!q) { clearAll(); return; }
-
-    root.classList.add('searching');
-    clr.hidden = false;
-
-    // 장 제목이 걸리면 그 장은 통째로 남깁니다
-    var whole = [];
-    for (var s = 0; s < sections.length; s++) {
-      var head = sections[s].querySelector('.shead');
-      whole[s] = !!(head && head.textContent.toLowerCase().indexOf(q) >= 0);
-    }
-
-    var total = 0;
-    for (var i = 0; i < units.length; i++) {
-      var u = units[i];
-      var sec = u.closest ? u.closest('section') : null;
-      var idx = sec ? sections.indexOf(sec) : -1;
-      var forced = idx >= 0 && whole[idx];
-      var hit = forced || (u.textContent || '').toLowerCase().indexOf(q) >= 0;
-      u.classList.toggle('nomatch', !hit);
-      if (hit) {
-        total++;
-        if (!forced) highlight(u, q);
-      }
-    }
-
-    // 표의 그룹 머리글은 아래에 살아남은 줄이 있을 때만
-    for (var g = 0; g < groups.length; g++) {
-      var row = groups[g].nextElementSibling, any = false;
-      while (row && !row.classList.contains('grp')) {
-        if (!row.classList.contains('nomatch')) { any = true; break; }
-        row = row.nextElementSibling;
-      }
-      groups[g].classList.toggle('nomatch', !any);
-    }
-
-    // 남은 게 없는 장은 접습니다
-    for (var k = 0; k < sections.length; k++) {
-      var alive = whole[k] || !!sections[k].querySelector(ALIVE_SEL);
-      sections[k].classList.toggle('nomatch', !alive);
-    }
-
-    hits.textContent = total ? total + '건' : '';
-    empty.classList.toggle('on', total === 0);
-  }
-
-  input.addEventListener('input', function () {
-    clearTimeout(timer);
-    var v = input.value;
-    timer = setTimeout(function () { run(v); }, 120);
-  });
-
-  clr.addEventListener('click', function () { input.value = ''; clearAll(); input.focus(); });
-
-  document.addEventListener('keydown', function (e) {
-    var tag = (e.target && e.target.tagName) || '';
-    if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
-      e.preventDefault();
-      input.focus();
-      input.select();
-    } else if (e.key === 'Escape' && (input.value || root.classList.contains('searching'))) {
-      input.value = '';
-      clearAll();
-    }
-  });
-
-  window.addEventListener('beforeprint', function () {
-    if (root.classList.contains('searching')) { input.value = ''; clearAll(); }
-  });
 })();
 </script>
 

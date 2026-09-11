@@ -20,7 +20,7 @@ $head = @'
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="2027년 1월 13~17일, 성인 4명 오사카 4박 5일 여행 일정표 10장. 3일차 교토 투어 2인·유니버설 스튜디오 2인 분리 운영, 검색과 구글맵 길찾기, 패스권 판정과 예산 배분.">
+<meta name="description" content="2027년 1월 13~17일, 성인 4명 오사카 4박 5일 여행 일정표 10장. 3일차 교토 투어 2인·유니버설 스튜디오 2인 분리 운영, 구글맵 길찾기와 숙소 좌표 고정, 패스권 판정과 예산 배분.">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="theme-color" content="#eceeef" media="(prefers-color-scheme: light)">
