@@ -206,6 +206,27 @@
 
   .mono { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
 
+  /* ---------- 강조 3단계 ----------
+     .hl  놓치면 일정이 깨지는 것 — 붉은색 굵게
+     .num 금액·시각처럼 숫자로 확인하는 것 — 남색 굵게
+     strong 일반 강조 — 본문색 굵게                                  */
+  strong { font-weight: 700; color: var(--ink); }
+
+  .hl {
+    color: var(--accent);
+    font-weight: 700;
+    background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent) 16%, transparent) 62%);
+    padding: 0 1px;
+  }
+  .num {
+    color: var(--indigo);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  @supports not (background: color-mix(in srgb, red 10%, transparent)) {
+    .hl { background: none; }
+  }
+
   /* ---------- masthead ---------- */
   .mast { display: flex; flex-direction: column; gap: 18px; }
   .mast .sub { max-width: 62ch; color: var(--ink-2); font-size: 16px; }
@@ -455,7 +476,62 @@
     display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap;
     font-size: 12.5px; color: var(--ink-3);
   }
-  .dfoot .amt { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 500; font-size: 14px; }
+  .dfoot .amt { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; color: var(--indigo); font-weight: 700; font-size: 14px; }
+  tfoot td:not(:first-child) { color: var(--indigo); }
+
+  /* ---------- 장 끝의 이동 버튼 ---------- */
+  .chend {
+    display: flex; justify-content: flex-end; align-items: center; gap: 8px;
+    margin-top: 18px; flex-wrap: wrap;
+  }
+  .chend a {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: "IBM Plex Sans KR", system-ui, sans-serif;
+    font-size: 12px; font-weight: 500; text-decoration: none;
+    color: var(--ink-3);
+    background: var(--surface);
+    border: 1px solid var(--line); border-radius: 2px;
+    padding: 5px 11px;
+  }
+  .chend a:hover { color: var(--accent); border-color: var(--accent); }
+  .chend a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .chend a.top { color: var(--ink-2); }
+  .chend svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* 스티키 툴바에 제목이 가리지 않도록 */
+  .wrap > section, .mast { scroll-margin-top: 62px; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  /* ---------- home button ---------- */
+  .home {
+    position: fixed;
+    right: max(18px, env(safe-area-inset-right));
+    bottom: max(18px, env(safe-area-inset-bottom));
+    z-index: 30;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 14px;
+    font-family: "IBM Plex Sans KR", system-ui, sans-serif;
+    font-size: 12.5px; font-weight: 500; line-height: 1.4;
+    color: var(--ink-2);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    opacity: 0; visibility: hidden; transform: translateY(6px);
+  }
+  .home.on { opacity: 1; visibility: visible; transform: none; }
+  .home:hover { color: var(--ink); border-color: var(--ink-3); }
+  .home:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .home svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+  @media (prefers-reduced-motion: no-preference) {
+    .home { transition: opacity .16s ease, transform .16s ease, border-color .12s ease, color .12s ease; }
+  }
+  @media (max-width: 620px) {
+    .home { padding: 9px 12px; }
+    .home span { display: none; }
+  }
 
   /* ---------- notes / checklist ---------- */
   .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px; }
@@ -518,7 +594,7 @@
     }
 
     body { font-size: 9.4pt; line-height: 1.5; background: #fff; }
-    .bar, .toc, .empty, a.gm { display: none !important; }
+    .bar, .toc, .empty, a.gm, .home, .chend { display: none !important; }
     .wrap { max-width: none; padding: 0; gap: 0; }
 
     h1 { font-size: 25pt; }
@@ -539,6 +615,7 @@
     thead { display: table-header-group; }
 
     .day, .panel, .facts, .routes, .rings, .scroll, .btotal { box-shadow: none; }
+    .hl { background: none; }
     .scroll { overflow: visible !important; }
     table { min-width: 0; }
     th, td { padding: 5px 8px; }
@@ -582,7 +659,7 @@
 
 <div class="wrap">
 
-  <header class="mast">
+  <header class="mast" id="top">
     <div class="eyebrow">2027.01.13 wed — 01.17 sun · 성인 4명 · 4박 5일 · 10장</div>
     <h1>오사카 4박 5일</h1>
     <p class="sub">닛폰바시 <span class="mono">1-11-6</span>에 베이스를 두고 오사카 시내·교토·나라를 도는 먹방＋명소 일정. <strong>3일차 하루만 2인＋2인으로 나뉘어</strong> 한 팀은 교토 원데이 투어, 한 팀은 유니버설 스튜디오 재팬으로 갑니다. 나머지 나흘은 4명이 함께 움직입니다.</p>
@@ -614,7 +691,7 @@
       <div class="fact">
         <dt>숙소</dt>
         <dd>APARTMENT HOTEL 11 NIPPOMBASHI
-          <a class="gm" data-place data-dest="APARTMENT HOTEL 11 NIPPOMBASHI 大阪府大阪市中央区日本橋1-11-6" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=APARTMENT HOTEL 11 NIPPOMBASHI 大阪府大阪市中央区日本橋1-11-6" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>지도</a>
+          <a class="gm" data-place data-dest="34.667911,135.508590" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=34.667911,135.508590" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>지도</a>
         </dd>
         <div class="addr">일본 오사카부 오사카시 주오구 닛폰바시 1-11-6<br><span class="jp">大阪府大阪市中央区日本橋1-11-6</span></div>
         <div class="note"><span class="done">예약 완료</span> · 주방·세탁기 · 쿠로몬 도보 3분</div>
@@ -637,7 +714,7 @@
     </dl>
 
     <div class="flag solo" style="--day: var(--vermilion); margin-top: 18px;">
-      <strong>3일차 분리 전에 확인할 두 가지.</strong> ① 교토 투어를 4인으로 예약했다면 <strong>2인 취소가 되는지, 수수료가 얼마인지</strong>부터 마이리얼트립에서 확인하세요. 출발 임박 취소는 전액 환불이 안 되는 상품이 많습니다. ② USJ 스튜디오 패스는 <strong>날짜 지정 상품</strong>이라 1월 15일(금)을 못 박고 사야 하고, 슈퍼 닌텐도 월드 입장 정리권은 별도입니다. 둘 다 해결되면 나머지는 그대로 굴러갑니다.
+      <strong>3일차 분리 전에 확인할 두 가지.</strong> ① 교토 투어를 4인으로 예약했다면 <span class="hl">2인 취소가 되는지, 수수료가 얼마인지</span>부터 마이리얼트립에서 확인하세요. 출발 임박 취소는 전액 환불이 안 되는 상품이 많습니다. ② USJ 스튜디오 패스는 <span class="hl">날짜 지정 상품이라 1월 15일(금)을 못 박고 사야</span> 하고, 슈퍼 닌텐도 월드 입장 정리권은 별도입니다. 둘 다 해결되면 나머지는 그대로 굴러갑니다.
     </div>
 
     <div class="teams" style="margin-top: 18px;">
@@ -658,11 +735,11 @@
     <div class="routes" style="margin-top: 18px;">
       <div class="route">
         <h4>숙소 <span class="jp">APARTMENT HOTEL 11 NIPPOMBASHI</span> — 모든 길찾기의 출발점</h4>
-        <div class="path">일본 오사카부 오사카시 주오구 닛폰바시 1-11-6<br>大阪府大阪市中央区日本橋1-11-6<br><em>—— 도보 3~5분 ——</em> 지하철 닛폰바시역</div>
-        <p>이 문서의 모든 <strong>길찾기</strong> 버튼은 이 주소에서 출발하는 구글맵 경로로 열립니다. 밖에 나가 있을 때는 상단 툴바에서 <span class="kw">현재 위치에서</span>로 바꾸면 그 자리 기준으로 다시 계산됩니다.</p>
-        <p>택시 기사에게는 <span class="jp">大阪府大阪市中央区日本橋1-11-6</span> 이 줄을 그대로 보여주면 됩니다. <strong>숙소 위치</strong> 버튼은 호텔 이름＋주소로 검색해 건물 핀을 바로 띄웁니다.</p>
+        <div class="path">일본 오사카부 오사카시 주오구 닛폰바시 1-11-6 <span class="dim">〒542-0073</span><br>大阪府大阪市中央区日本橋1-11-6<br>핀 <b>34.667911, 135.508590</b><br><em>—— 도보 3~5분 ——</em> 지하철 닛폰바시역</div>
+        <p>이 문서의 모든 <strong>길찾기</strong> 버튼은 <span class="hl">위 좌표에 핀을 고정</span>해 두었습니다. 이름으로 검색할 때처럼 엉뚱한 지점이 잡히지 않고 항상 같은 자리에서 출발·도착합니다. 밖에 나가 있을 때는 상단 툴바에서 <span class="kw">현재 위치에서</span>로 바꾸면 그 자리 기준으로 다시 계산됩니다.</p>
+        <p>택시 기사에게는 <span class="jp">大阪府大阪市中央区日本橋1-11-6</span> 이 줄을 그대로 보여주면 됩니다. <strong>숙소 위치</strong> 버튼은 좌표 핀을 바로 띄우니, <span class="hl">체크인 첫날 실제 건물과 맞는지 한 번만 확인</span>하고 구글맵에 저장해 두세요.</p>
         <div class="spec">
-          <a class="gm big" data-place data-dest="APARTMENT HOTEL 11 NIPPOMBASHI 大阪府大阪市中央区日本橋1-11-6" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=APARTMENT HOTEL 11 NIPPOMBASHI 大阪府大阪市中央区日本橋1-11-6" target="_blank" rel="noopener">
+          <a class="gm big" data-place data-dest="34.667911,135.508590" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=34.667911,135.508590" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>숙소 위치
           </a>
           <a class="gm big" data-dest="日本橋駅 大阪メトロ" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=日本橋駅 大阪メトロ" target="_blank" rel="noopener">
@@ -673,7 +750,7 @@
       <div class="route">
         <h4>나뉘는 날 운영 규칙</h4>
         <div class="path">아침 <em>——</em> 각자 출발 <em>——</em> 하루 <em>——</em> 숙소에서 재합류 <em>(저녁은 각자)</em></div>
-        <p>저녁 시각이 달라 <strong>합류 지점은 식당이 아니라 숙소</strong>로 잡는 게 안전합니다. A조는 18:30 난바 도착 후 근처에서 저녁, B조는 파크 안에서 저녁을 해결하고 들어옵니다. 무리해서 같이 먹으려다 한쪽이 두 시간을 기다리는 게 이 일정의 유일한 함정입니다.</p>
+        <p>저녁 시각이 달라 <span class="hl">합류 지점은 식당이 아니라 숙소</span>로 잡는 게 안전합니다. A조는 18:30 난바 도착 후 근처에서 저녁, B조는 파크 안에서 저녁을 해결하고 들어옵니다. 무리해서 같이 먹으려다 한쪽이 두 시간을 기다리는 게 이 일정의 유일한 함정입니다.</p>
         <p>양쪽 다 <span class="kw">숙소 출입 수단(키박스 코드·카드키)을 각자 갖고</span> 나가고, 단톡방에 출발·도착만 한 줄씩 남기세요.</p>
         <div class="spec"><span>재합류 <b>숙소</b></span><span>저녁 <b>각자</b></span><span>세탁 <b>먼저 온 팀</b></span></div>
       </div>
@@ -761,7 +838,7 @@
     <div class="shead"><span class="chno">03</span><h2>교통 · 패스</h2><p>공항 왕복, 패스 판정, 목적지별 경로 — 버튼을 누르면 구글맵이 열립니다</p></div>
 
     <div class="flag solo" style="--day: var(--vermilion);">
-      <strong>모든 계산에 T2 → T1 무료 셔틀 7~10분을 더하세요.</strong> 간사이공항역·리무진 정류장·ATM은 전부 T1에 있습니다. 셔틀은 5~10분 간격 무료이고 짐 검사 없이 탑니다. 갈 때·올 때 각각 <span class="mono">15분</span>씩 여유를 잡아두면 안전합니다.
+      <span class="hl">모든 계산에 T2 → T1 무료 셔틀 7~10분을 더하세요.</span> 간사이공항역·리무진 정류장·ATM은 전부 T1에 있습니다. 셔틀은 5~10분 간격 무료이고 짐 검사 없이 탑니다. 갈 때·올 때 각각 <span class="mono">15분</span>씩 여유를 잡아두면 안전합니다.
       <a class="gm" data-dest="関西国際空港 第1ターミナル" data-from="関西国際空港 第2ターミナル" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=関西国際空港 第2ターミナル" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>T2→T1
       </a>
@@ -775,7 +852,7 @@
         <tbody>
           <tr class="pick">
             <td>난카이 공항급행 <span class="jp">空港急行</span>
-              <a class="gm" data-dest="大阪府大阪市中央区日本橋1-11-6" data-from="関西国際空港駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=南海難波駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>공항→숙소</a>
+              <a class="gm" data-dest="34.667911,135.508590" data-from="関西国際空港駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=南海難波駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>공항→숙소</a>
             </td>
             <td>¥970</td><td>8,439</td><td>45분</td>
             <td class="wrap-cell dim"><span class="yes">채택.</span> 자유석·15~20분 간격. 종점이 난카이 난바라 숙소까지 도보 10분. 왕복 1인 <span class="mono">¥1,940</span></td>
@@ -1088,7 +1165,7 @@
           <div class="date">01.13 WED</div>
           <p class="line">짐 풀고 숙소 반경 1km 안에서만 움직이는 날.</p>
           <div class="dpass"><span class="tag">오늘</span> 난카이 공항급행 ¥970 · ICOCA 발급 · 도톤보리는 전부 도보
-            <a class="gm" data-dest="道頓堀" data-from="関西国際空港 第2ターミナル" data-via="大阪府大阪市中央区日本橋1-11-6" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=道頓堀" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>오늘 동선</a>
+            <a class="gm" data-dest="道頓堀" data-from="関西国際空港 第2ターミナル" data-via="34.667911,135.508590" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=道頓堀" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>오늘 동선</a>
           </div>
         </div>
         <div class="slots">
@@ -1096,7 +1173,7 @@
             <div class="t">출발 −3h</div>
             <div>
               <h4>인천공항 제1여객터미널</h4>
-              <p>피치 <span class="kw">국제선 카운터는 출발 50분 전 마감</span>. 온라인 체크인을 마쳤는지 4명 각자 확인하고 출발하세요.</p>
+              <p>피치 <span class="hl">국제선 카운터는 출발 50분 전 마감</span>. 온라인 체크인을 마쳤는지 4명 각자 확인하고 출발하세요.</p>
               <div class="flag"><strong>입국 전 준비</strong> · Visit Japan Web 입국심사·세관 QR을 4명 각자 미리 발급. 기내에서 하면 와이파이가 없어 곤란합니다.</div>
             </div>
           </div>
@@ -1104,7 +1181,7 @@
             <div class="t">도착 ＋50분</div>
             <div>
               <h4>KIX T2 → 셔틀 → T1 → 난카이 공항급행 → 난바
-                <a class="gm" data-dest="大阪府大阪市中央区日本橋1-11-6" data-from="関西国際空港駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=南海難波駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>공항→숙소</a>
+                <a class="gm" data-dest="34.667911,135.508590" data-from="関西国際空港駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=南海難波駅" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>공항→숙소</a>
               </h4>
               <p>내리자마자 <span class="kw">T1행 무료 셔틀</span>. 전철역도 ATM도 T1에 있습니다. T1에서 <strong>ICOCA 발급 ＋ 1차 현금 인출(1인 ¥10,000)</strong>을 끝내고 공항급행 45분. 난바역에서 숙소까지 도보 10분.</p>
               <div class="cost">¥970 <b>／ 8,439원</b> · 1인 편도</div>
@@ -1114,7 +1191,7 @@
             <div class="t">체크인</div>
             <div>
               <h4>APARTMENT HOTEL 11 NIPPOMBASHI <span class="jp">日本橋1-11-6</span>
-                <a class="gm" data-dest="大阪府大阪市中央区日本橋1-11-6" data-from="南海難波駅" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=大阪府大阪市中央区日本橋1-11-6" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
+                <a class="gm" data-dest="34.667911,135.508590" data-from="南海難波駅" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=34.667911,135.508590" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
               </h4>
               <p>아파트먼트형은 무인 셀프 체크인·키박스가 많습니다. <span class="kw">체크인 방법과 주소 <span class="jp">(大阪府大阪市中央区日本橋1-11-6)</span>를 캡처해 두세요.</span> 주방·세탁기는 이번 예산의 핵심 무기입니다.</p>
             </div>
@@ -1222,7 +1299,7 @@
     <div class="shead"><span class="chno">06</span><h2>Day 3 · A조 — 교토</h2><p>1/15 금 · 2인 · 원데이 투어 (결제 완료)</p></div>
 
     <div class="flag solo" style="--day: var(--moss);">
-      <strong>가장 먼저 할 일은 인원 변경입니다.</strong> 4인으로 예약했다면 마이리얼트립에서 <span class="kw">2인 취소 가능 여부와 수수료</span>를 확인하세요. 취소가 안 되는 상품이면 ① B조 2명도 교토를 가고 USJ를 4일차로 옮기거나, ② 남는 2인분을 버리고 진행하거나 — 이 둘 중 하나를 <strong>출발 전에</strong> 결정해야 합니다. 티켓 구매보다 이쪽이 먼저입니다.
+      <span class="hl">가장 먼저 할 일은 인원 변경입니다.</span> 4인으로 예약했다면 마이리얼트립에서 <span class="hl">2인 취소 가능 여부와 수수료</span>를 확인하세요. 취소가 안 되는 상품이면 ① B조 2명도 교토를 가고 USJ를 4일차로 옮기거나, ② 남는 2인분을 버리고 진행하거나 — 이 둘 중 하나를 <strong>출발 전에</strong> 결정해야 합니다. 티켓 구매보다 이쪽이 먼저입니다.
     </div>
 
     <div class="days">
@@ -1302,7 +1379,7 @@
           <tr class="pick">
             <td>1일 스튜디오 패스</td>
             <td>¥19,600</td><td>170,520</td>
-            <td class="wrap-cell dim"><span class="yes">필수.</span> 날짜별 변동가라 <strong>1월 평일은 하단 구간(¥8,600~10,900)</strong>입니다. 예산은 1인 ¥9,800으로 잡았습니다. <span class="kw">공식 웹/앱에서 1월 15일을 지정해 사전 구매</span> — 당일 매표소 줄은 겨울에도 깁니다</td>
+            <td class="wrap-cell dim"><span class="yes">필수.</span> 날짜별 변동가라 <strong>1월 평일은 하단 구간(¥8,600~10,900)</strong>입니다. 예산은 1인 ¥9,800으로 잡았습니다. <span class="hl">공식 웹/앱에서 1월 15일을 지정해 사전 구매</span> — 당일 매표소 줄은 겨울에도 깁니다</td>
           </tr>
           <tr>
             <td>슈퍼 닌텐도 월드 입장 정리권</td>
@@ -1329,7 +1406,7 @@
     </div>
 
     <div class="flag solo" style="--day: var(--indigo);">
-      <strong>가격과 운영시간은 반드시 공식 사이트에서 확인하세요.</strong> USJ는 날짜별 변동가제라 위 금액은 <span class="mono">2025년 기준 추정</span>이고, 2027년 1월 15일의 개장·폐장 시각(겨울 평일은 보통 <span class="mono">09:00~19:00</span>, 성수기엔 21:00까지)도 <strong>출발 2~3주 전에야 확정</strong>됩니다. 아래 시간표는 09:00 개장·20:00 폐장을 가정한 것이니, 확정되면 앞뒤만 밀어 넣으면 됩니다.
+      <span class="hl">가격과 운영시간은 반드시 공식 사이트에서 확인하세요.</span> USJ는 날짜별 변동가제라 위 금액은 <span class="mono">2025년 기준 추정</span>이고, 2027년 1월 15일의 개장·폐장 시각(겨울 평일은 보통 <span class="mono">09:00~19:00</span>, 성수기엔 21:00까지)도 <strong>출발 2~3주 전에야 확정</strong>됩니다. 아래 시간표는 09:00 개장·20:00 폐장을 가정한 것이니, 확정되면 앞뒤만 밀어 넣으면 됩니다.
     </div>
 
     <div class="days">
@@ -1348,7 +1425,7 @@
             <div class="t">전날 밤</div>
             <div>
               <h4>앱 · 티켓 · 충전</h4>
-              <p><span class="kw">공식 앱(USJ) 설치 ＋ 티켓 QR 등록 ＋ 로그인</span>까지 전날 끝내세요. 당일 아침 게이트 앞에서 앱을 깔면 정리권 경쟁에서 집니다. 보조배터리는 필수 — 하루 종일 앱으로 대기시간을 봅니다.</p>
+              <p><span class="hl">공식 앱(USJ) 설치 ＋ 티켓 QR 등록 ＋ 로그인</span>까지 전날 끝내세요. 당일 아침 게이트 앞에서 앱을 깔면 정리권 경쟁에서 집니다. 보조배터리는 필수 — 하루 종일 앱으로 대기시간을 봅니다.</p>
             </div>
           </div>
           <div class="slot">
@@ -1365,8 +1442,8 @@
             <div class="t">09:00</div>
             <div>
               <h4>개장 — 앱으로 닌텐도 월드 정리권부터</h4>
-              <p>게이트를 통과하는 <strong>그 자리에서</strong> 공식 앱을 열어 <span class="jp">슈퍼 닌텐도 월드</span> 입장 정리권을 뽑습니다. 오전 회차가 빨리 사라지니 <span class="kw">이것만은 다른 무엇보다 먼저</span>. 뽑아 놓은 뒤 그 시간까지 다른 구역을 돕니다.</p>
-              <div class="flag"><strong>순서 원칙</strong> · 인기 어트랙션은 <span class="mono">개장 직후</span>와 <span class="mono">폐장 1시간 전</span>이 가장 짧습니다. 한가운데 시간대(11~16시)에는 퍼레이드·쇼·식사·쇼핑을 끼워 넣으세요.</div>
+              <p>게이트를 통과하는 <strong>그 자리에서</strong> 공식 앱을 열어 <span class="jp">슈퍼 닌텐도 월드</span> 입장 정리권을 뽑습니다. 오전 회차가 빨리 사라지니 <span class="hl">이것만은 다른 무엇보다 먼저</span>. 뽑아 놓은 뒤 그 시간까지 다른 구역을 돕니다.</p>
+              <div class="flag"><span class="hl">순서 원칙</span> · 인기 어트랙션은 <span class="mono">개장 직후</span>와 <span class="mono">폐장 1시간 전</span>이 가장 짧습니다. 한가운데 시간대(11~16시)에는 퍼레이드·쇼·식사·쇼핑을 끼워 넣으세요.</div>
             </div>
           </div>
           <div class="slot">
@@ -1423,7 +1500,7 @@
             <div class="t">20:00</div>
             <div>
               <h4>폐장 · 숙소 복귀
-                <a class="gm" data-dest="大阪府大阪市中央区日本橋1-11-6" data-from="ユニバーサルシティ駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=大阪府大阪市中央区日本橋1-11-6" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>숙소로</a>
+                <a class="gm" data-dest="34.667911,135.508590" data-from="ユニバーサルシティ駅" data-mode="transit" href="https://www.google.com/maps/search/?api=1&query=34.667911,135.508590" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>숙소로</a>
               </h4>
               <p>폐장 직후 유니버설시티역은 <span class="kw">사람이 한꺼번에 몰립니다.</span> 15분쯤 시티워크에서 시간을 보내고 움직이는 편이 오히려 빠릅니다. 21시 전후 숙소 도착 → 내일 나라 일정이 있으니 바로 취침.</p>
               <div class="cost">¥560 <b>／ 4,872원</b></div>
@@ -1438,8 +1515,8 @@
       <div class="panel">
         <h3>B조가 꼭 해둘 것</h3>
         <ul>
-          <li><strong>티켓은 1월 15일 날짜 지정으로 사전 구매.</strong> 변동가제라 날짜를 고르는 순간 가격이 확정됩니다.</li>
-          <li><strong>공식 앱 설치·로그인·티켓 등록을 전날 밤까지.</strong> 입장 정리권은 앱 전용입니다.</li>
+          <li><span class="hl">티켓은 1월 15일 날짜 지정으로 사전 구매.</span> 변동가제라 날짜를 고르는 순간 가격이 확정됩니다.</li>
+          <li><span class="hl">공식 앱 설치·로그인·티켓 등록을 전날 밤까지.</span> 입장 정리권은 앱 전용입니다.</li>
           <li>겨울 폐장 시각은 날짜마다 다릅니다. <span class="kw">출발 2~3주 전 공식 캘린더</span>에서 1/15을 확인하고 이 시간표를 조정하세요.</li>
           <li>파크 안은 <strong>카드·ICOCA 결제가 전부</strong> 됩니다. 현금은 거의 필요 없습니다.</li>
           <li data-ref>줄이 길어 못 탄 어트랙션에 미련 두지 마세요. <strong>2인이라 단일 라이더(Single Rider) 줄</strong>을 쓰면 인기 코스터를 훨씬 빨리 탑니다(같이 앉지는 못합니다).</li>
@@ -1450,9 +1527,9 @@
         <ul>
           <li><strong>숙소 출입 수단을 양쪽 다</strong> 갖고 나갑니다. 키박스 코드·카드키 위치를 아침에 확인.</li>
           <li>단톡방에 <strong>출발 · 도착 두 줄만</strong> 남기기. 하루 종일 연락하려다 서로 방해가 됩니다.</li>
-          <li><strong>저녁은 각자.</strong> A조 18:30, B조 20:00 종료라 합쳐 먹으려면 한쪽이 두 시간을 버려야 합니다.</li>
+          <li><span class="hl">저녁은 각자.</span> A조 18:30, B조 20:00 종료라 합쳐 먹으려면 한쪽이 두 시간을 버려야 합니다.</li>
           <li>먼저 들어온 A조가 <strong>세탁기</strong>를 돌리고, B조는 들어와서 널기만 합니다.</li>
-          <li>4일차(나라)는 다시 4명 전원. <span class="kw">08:40 킨테츠 닛폰바시역 출발</span>이니 3일차 밤에 무리하지 않는 게 핵심입니다.</li>
+          <li>4일차(나라)는 다시 4명 전원. <span class="hl">08:40 킨테츠 닛폰바시역 출발</span>이니 3일차 밤에 무리하지 않는 게 핵심입니다.</li>
         </ul>
       </div>
     </div>
@@ -1560,7 +1637,7 @@
               <h4>쿠로몬 시장 <span class="jp">(黒門市場)</span> — 마지막 먹방
                 <a class="gm" data-dest="黒門市場" data-mode="walking" href="https://www.google.com/maps/search/?api=1&query=黒門市場" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>길찾기</a>
               </h4>
-              <p>숙소에서 도보 3~5분. 참치회, 고베규 꼬치, 성게, 구운 가리비, 딸기. 서서 먹는 구조라 아침에 가야 사람이 덜합니다. <span class="kw">현금 위주 점포가 많습니다.</span></p>
+              <p>숙소에서 도보 3~5분. 참치회, 고베규 꼬치, 성게, 구운 가리비, 딸기. 서서 먹는 구조라 아침에 가야 사람이 덜합니다. <span class="hl">현금 위주 점포가 많습니다.</span></p>
               <div class="cost">¥1,500 <b>／ 13,050원</b></div>
             </div>
           </div>
@@ -1568,7 +1645,7 @@
             <div class="t">10:30</div>
             <div>
               <h4>체크아웃 · 짐 맡기기 · 난바 마지막 쇼핑</h4>
-              <p>숙소 짐 보관이 되면 그게 최선, 안 되면 난카이 난바역 코인락커(대형 ¥700 내외). 캐리어 4개 들고 쇼핑은 불가능합니다. <span class="kw">면세는 ¥5,000 이상·여권 지참</span>이니 사람별로 쪼개 사지 말고 한 사람 이름으로 몰아 계산하세요.</p>
+              <p>숙소 짐 보관이 되면 그게 최선, 안 되면 난카이 난바역 코인락커(대형 ¥700 내외). 캐리어 4개 들고 쇼핑은 불가능합니다. <span class="hl">면세는 ¥5,000 이상·여권 지참</span>이니 사람별로 쪼개 사지 말고 한 사람 이름으로 몰아 계산하세요.</p>
             </div>
           </div>
           <div class="slot">
@@ -1594,7 +1671,7 @@
               <h4>T2 도착 · 피치 체크인</h4>
               <p><span class="kw">쇼핑으로 늘어난 무게가 여기서 걸립니다.</span> 줄 서기 전에 4명이 짐을 서로 나눠 담아 한도를 맞추세요.</p>
               <div class="cost">¥500 <b>／ 4,350원</b> · 잔돈 소진</div>
-              <div class="flag"><strong>절대 기준</strong> · 피치 국제선 카운터는 출발 <span class="mono">50분 전</span> 마감. 여기 걸리면 표가 그대로 날아갑니다.</div>
+              <div class="flag"><span class="hl">절대 기준</span> · 피치 국제선 카운터는 출발 <span class="hl">50분 전 마감</span>. 여기 걸리면 표가 그대로 날아갑니다.</div>
             </div>
           </div>
         </div>
@@ -1664,9 +1741,11 @@
       <div class="panel">
         <h3>이 문서 쓰는 법</h3>
         <ul>
+          <li><span class="hl">붉은 굵은 글씨</span>는 <strong>놓치면 일정이 깨지는 것</strong>(마감 시각, 사전 구매, 꼭 확인할 것)이고, <span class="num">파란 숫자</span>는 그날·1인 기준으로 나가는 돈입니다.</li>
           <li>상단 <strong>검색창</strong>에 장소·금액·노선을 치면 해당 항목만 남습니다. <span class="mono">/</span> 키로 바로 검색, <span class="mono">Esc</span>로 해제.</li>
           <li>모든 <strong>길찾기</strong> 버튼은 구글맵으로 열립니다. 기본 출발지는 숙소(<span class="mono">日本橋1-11-6</span>)이고, 툴바에서 <span class="kw">현재 위치 기준</span>으로 바꿀 수 있습니다.</li>
           <li><strong>참고 자료 접기</strong>를 누르면 불채택 패스·대안처럼 당일에 볼 필요 없는 줄이 사라집니다.</li>
+          <li>장이 끝날 때마다 <strong>「NN장 처음으로」·「목차」</strong> 버튼이 있고, 오른쪽 아래 <strong>홈</strong> 버튼은 어디서든 맨 위 목차로 돌아갑니다.</li>
           <li><strong>인쇄 · PDF</strong>는 장마다 새 페이지로 나옵니다 — 10장짜리 종이 일정표가 됩니다.</li>
         </ul>
       </div>
@@ -1725,12 +1804,69 @@
 
 </div>
 
+<button type="button" class="home" id="homebtn" title="맨 위 목차로 돌아가기">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 20v-6h5v6"/></svg>
+  <span>홈</span>
+</button>
+
 <script>
 (function () {
   var root = document.documentElement;
 
+  /* ---------- 0. 홈 버튼 · 장별 상단 이동 ---------- */
+  var homebtn = document.getElementById('homebtn');
+  var softScroll = !window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.wrap > section'));
+  var UP_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5"/><path d="m5.5 11.5 6.5-6.5 6.5 6.5"/></svg>';
+  var HOME_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 20v-6h5v6"/></svg>';
+
+  function scrollToEl(el) {
+    if (!el) return;
+    try { el.scrollIntoView({ behavior: softScroll ? 'smooth' : 'auto', block: 'start' }); }
+    catch (e) { el.scrollIntoView(); }
+  }
+
+  // 장마다 끝에 "이 장 처음으로 / 목차" 버튼을 붙입니다
+  chapters.forEach(function (sec) {
+    var no = sec.querySelector('.chno');
+    var title = sec.querySelector('h2');
+    var label = (no ? no.textContent.trim() + '장' : '이 장') + ' 처음으로';
+    var nav = document.createElement('div');
+    nav.className = 'chend';
+    nav.innerHTML =
+      '<a href="#' + sec.id + '">' + UP_SVG + label + '</a>' +
+      '<a href="#top" class="top">' + HOME_SVG + '목차</a>';
+    if (title) nav.firstChild.setAttribute('title', title.textContent.trim() + ' 맨 위로');
+    sec.appendChild(nav);
+  });
+
+  // 스티키 툴바에 가리지 않게 앵커 이동을 직접 처리
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!a) return;
+    var id = a.getAttribute('href').slice(1);
+    var el = id ? document.getElementById(id) : null;
+    if (!el) return;
+    e.preventDefault();
+    scrollToEl(el);
+    if (history.replaceState) history.replaceState(null, '', '#' + id);
+  });
+
+  function toggleHome() {
+    homebtn.classList.toggle('on', (window.pageYOffset || document.documentElement.scrollTop) > 420);
+  }
+  toggleHome();
+  window.addEventListener('scroll', toggleHome, { passive: true });
+
+  homebtn.addEventListener('click', function () {
+    if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    try { window.scrollTo({ top: 0, behavior: softScroll ? 'smooth' : 'auto' }); }
+    catch (e) { window.scrollTo(0, 0); }
+  });
+
   /* ---------- 1. 구글맵 길찾기 ---------- */
-  var HOTEL = '大阪府大阪市中央区日本橋1-11-6';
+  // 숙소 좌표 — 大阪府大阪市中央区日本橋1-11-6 (〒542-0073)
+  var HOTEL = '34.667911,135.508590';
   var GMKEY = 'osaka-2027-gm';
   var gmsel = document.getElementById('gmmode');
 
